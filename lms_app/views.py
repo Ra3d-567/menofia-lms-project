@@ -11,6 +11,7 @@ import random
 import csv
 import io
 from .models import Subject, User, Material, SubjectSection, Assignment, Submission, Announcement, AttendanceSession, AttendanceRecord
+from .forms import UserProfileForm
 from django.db.models import Q
 
 def user_login(request):
@@ -147,17 +148,65 @@ def student_dashboard(request):
 @user_passes_test(is_student, login_url='/login/')
 def student_settings(request):
     if request.method == 'POST':
-        form = PasswordChangeForm(request.user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)  # Important!
-            messages.success(request, 'Your password was successfully updated!')
-            return redirect('student_settings')
-        else:
-            messages.error(request, 'Please correct the error below.')
+        if 'profile_update' in request.POST:
+            profile_form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+            password_form = PasswordChangeForm(request.user)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, 'تم تحديث الملف الشخصي بنجاح!')
+                return redirect('student_settings')
+            else:
+                messages.error(request, 'يرجى تصحيح الأخطاء في الملف الشخصي.')
+        elif 'password_change' in request.POST:
+            profile_form = UserProfileForm(instance=request.user)
+            password_form = PasswordChangeForm(request.user, request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, 'تم تحديث كلمة المرور بنجاح!')
+                return redirect('student_settings')
+            else:
+                messages.error(request, 'يرجى تصحيح الأخطاء في كلمة المرور.')
     else:
-        form = PasswordChangeForm(request.user)
-    return render(request, 'student_settings.html', {'form': form})
+        profile_form = UserProfileForm(instance=request.user)
+        password_form = PasswordChangeForm(request.user)
+        
+    return render(request, 'student_settings.html', {
+        'profile_form': profile_form,
+        'form': password_form
+    })
+
+@login_required
+@user_passes_test(is_doctor, login_url='/login/')
+def doctor_settings(request):
+    if request.method == 'POST':
+        if 'profile_update' in request.POST:
+            profile_form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+            password_form = PasswordChangeForm(request.user)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, 'تم تحديث الملف الشخصي بنجاح!')
+                return redirect('doctor_settings')
+            else:
+                messages.error(request, 'يرجى تصحيح الأخطاء في الملف الشخصي.')
+        elif 'password_change' in request.POST:
+            profile_form = UserProfileForm(instance=request.user)
+            password_form = PasswordChangeForm(request.user, request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, 'تم تحديث كلمة المرور بنجاح!')
+                return redirect('doctor_settings')
+            else:
+                messages.error(request, 'يرجى تصحيح الأخطاء في كلمة المرور.')
+    else:
+        profile_form = UserProfileForm(instance=request.user)
+        password_form = PasswordChangeForm(request.user)
+        
+    return render(request, 'doctor_settings.html', {
+        'profile_form': profile_form,
+        'form': password_form
+    })
 
 @login_required(login_url='/login/')
 @user_passes_test(is_doctor, login_url='/login/')

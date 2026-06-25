@@ -113,3 +113,6 @@ AXES_COOLOFF_TIME = 1
 # SECURE_CONTENT_TYPE_NOSNIFF = True
 # CSRF_COOKIE_SECURE = True
 # SESSION_COOKIE_SECURE = True
+# تعطيل نظام الحماية لو إحنا في وضع التطوير (Local) عشان نعرف نجرب براحتنا
+if DEBUG:
+    AXES_ENABLED = False

@@ -41,6 +41,7 @@ class User(AbstractUser):
         blank=True, 
         help_text=_('Section 1 to 5')
     )
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
 
     REQUIRED_FIELDS = ['email', 'role']
 

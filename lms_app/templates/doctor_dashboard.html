@@ -111,7 +111,7 @@
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.5rem;
             animation: slideUp 0.8s ease-out;
         }
@@ -121,7 +121,7 @@
             backdrop-filter: blur(12px);
             border: 1px solid var(--border);
             border-radius: 16px;
-            padding: 1.75rem;
+            padding: 1.25rem;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
@@ -238,6 +238,174 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+
+        /* Filter Tabs CSS */
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            background: var(--surface-dark);
+            padding: 0.75rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .filter-tab {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid transparent;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-tab:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .filter-tab.active {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+
+        /* Custom Webkit Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 4px; border: 1px solid var(--border); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* Floating Action Button (FAB) */
+        .fab-btn {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: #fff;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px var(--primary-glow);
+            z-index: 1000;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .fab-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px var(--primary-glow);
+        }
+
+        /* Quick Action Modal */
+        .qa-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .qa-modal-content {
+            background: var(--surface-dark);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            animation: slideUp 0.3s ease-out;
+            position: relative;
+        }
+
+        .qa-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .qa-modal-header h3 {
+            margin: 0;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .qa-close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .qa-close-btn:hover {
+            color: #fff;
+        }
+
+        /* Progressive Disclosure CSS */
+        .card-header-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            cursor: pointer;
+            width: 100%;
+            user-select: none;
+        }
+        
+        .toggle-icon {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            margin-top: 0.2rem;
+        }
+
+        .subject-card.expanded .toggle-icon {
+            transform: rotate(180deg);
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .card-details-wrapper {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out;
+        }
+        
+        .subject-card.expanded .card-details-wrapper {
+            grid-template-rows: 1fr;
+        }
+
+        .card-details-inner {
+            overflow: hidden;
+            min-height: 0;
+        }
     </style>
 </head>
 <body>
@@ -246,8 +414,16 @@
             <img src="{% static 'images/logo_nav.png' %}" alt="University Logo" class="nav-logo me-2">
             <h1>منصة كلية التربية النوعية</h1>
         </div>
-        <div class="user-greeting">
-            <span>مرحباً، دكتور {{ user.last_name|default:user.username }}</span>
+        <div class="user-greeting" style="display: flex; align-items: center; gap: 0.5rem;">
+            {% if request.user.profile_picture %}
+                <img src="{{ request.user.profile_picture.url }}" alt="Profile Picture" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+            {% else %}
+                <svg viewBox="0 0 24 24" style="width: 36px; height: 36px; fill: var(--text-muted); background: rgba(255,255,255,0.05); border-radius: 50%; padding: 4px; border: 2px solid var(--border);">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+            {% endif %}
+            <span style="margin-left: 1rem;">مرحباً، دكتور {{ user.last_name|default:user.username }}</span>
+            <a href="{% url 'doctor_settings' %}" class="logout-btn" style="border-color: rgba(59, 130, 246, 0.3); color: #93c5fd; margin-right: 0.5rem;" onmouseover="this.style.backgroundColor='rgba(59, 130, 246, 0.1)'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#93c5fd';">⚙️ الإعدادات</a>
             <a href="{% url 'logout' %}" class="logout-btn">تسجيل الخروج</a>
         </div>
     </nav>
@@ -268,16 +444,40 @@
             <p>نظرة عامة على المواد والسكاشن المسندة إليك وعدد الطلاب المسجلين.</p>
         </div>
 
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all">الكل</button>
+            <button class="filter-tab" data-filter="1">الفرقة الأولى</button>
+            <button class="filter-tab" data-filter="2">الفرقة الثانية</button>
+            <button class="filter-tab" data-filter="3">الفرقة الثالثة</button>
+            <button class="filter-tab" data-filter="4">الفرقة الرابعة</button>
+        </div>
+
         <div class="dashboard-grid">
-            <h3 style="grid-column: 1 / -1; color: #fff; margin-bottom: -0.5rem;">المواد الأساسية</h3>
+            <div id="no-results-msg" style="display: none; grid-column: 1 / -1; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; padding: 1.5rem; text-align: center; border-radius: 12px; margin-bottom: 1rem;">
+                لا توجد مواد أو سكاشن مسندة لك في هذه الفرقة.
+            </div>
+
+            <h3 class="subject-section-title" style="grid-column: 1 / -1; color: #fff; margin-bottom: -0.5rem;">المواد الأساسية</h3>
             {% if main_subjects %}
                 {% for subject in main_subjects %}
-                <div class="subject-card">
-                    <!-- Row 1: Header -->
-                    <div style="margin-bottom: 1rem;">
-                        <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem;">{{ subject.name }}</h3>
-                        <span class="badge">{{ subject.code }}</span>
+                <div class="subject-card" data-year="{{ subject.academic_year }}">
+                    <div class="card-header-toggle" onclick="this.parentElement.classList.toggle('expanded')">
+                        <div>
+                            <span class="badge" style="margin-bottom: 0.5rem; display: inline-block;">{{ subject.code }}</span>
+                            <h3 style="margin: 0; font-size: 1.25rem; color: #fff;">{{ subject.name }}</h3>
+                        </div>
+                        <div class="toggle-icon">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                        </div>
                     </div>
+                    
+                    <div class="card-details-wrapper">
+                        <div class="card-details-inner">
+                            <div style="padding-top: 1.5rem; margin-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
 
                     <!-- Row 2: Schedule Info -->
                     <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
@@ -493,6 +693,9 @@
                             {{ subject.enrollments.count }} إجمالي الطلاب
                         </div>
                     </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 {% endfor %}
             {% else %}
@@ -502,18 +705,28 @@
                 </div>
             {% endif %}
 
-            <h3 style="grid-column: 1 / -1; color: #fff; margin-top: 1rem; margin-bottom: -0.5rem;">السكاشن المسندة</h3>
+            <h3 class="subject-section-title" style="grid-column: 1 / -1; color: #fff; margin-top: 1rem; margin-bottom: -0.5rem;">السكاشن المسندة</h3>
             {% if assigned_sections %}
                 {% for section in assigned_sections %}
-                <div class="subject-card">
-                    <!-- Row 1: Header -->
-                    <div style="margin-bottom: 1rem;">
-                        <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem;">{{ section.subject.name }}</h3>
-                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                            <span class="badge secondary">{{ section.subject.code }}</span>
-                            <span class="badge" style="background: rgba(236, 72, 153, 0.15); color: #f472b6; border-color: rgba(236, 72, 153, 0.3);">سكشن {{ section.section_group }}</span>
+                <div class="subject-card" data-year="{{ section.subject.academic_year }}">
+                    <div class="card-header-toggle" onclick="this.parentElement.classList.toggle('expanded')">
+                        <div>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+                                <span class="badge secondary">{{ section.subject.code }}</span>
+                                <span class="badge" style="background: rgba(236, 72, 153, 0.15); color: #f472b6; border-color: rgba(236, 72, 153, 0.3);">سكشن {{ section.section_group }}</span>
+                            </div>
+                            <h3 style="margin: 0; font-size: 1.25rem; color: #fff;">{{ section.subject.name }}</h3>
+                        </div>
+                        <div class="toggle-icon">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <path d="M7 10l5 5 5-5z"/>
+                            </svg>
                         </div>
                     </div>
+
+                    <div class="card-details-wrapper">
+                        <div class="card-details-inner">
+                            <div style="padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: 1rem;">
 
                     <!-- Row 2: Schedule Info -->
                     <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
@@ -691,6 +904,9 @@
                             <button type="submit" class="action-btn" style="align-self: flex-start; padding: 0.4rem 1rem; background-color: rgba(234, 179, 8, 0.2); border-color: rgba(234, 179, 8, 0.5); color: #eab308;">نشر للسكشن</button>
                         </form>
                     </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 {% endfor %}
             {% else %}
@@ -699,7 +915,192 @@
                     <p>لم يتم إسنادك كدكتور لأي سكشن.</p>
                 </div>
             {% endif %}
+                </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="fab-btn" id="fabBtn" title="إجراء سريع">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+    </button>
+
+    <!-- Quick Action Modal -->
+    <div class="qa-modal" id="qaModal">
+        <div class="qa-modal-content">
+            <div class="qa-modal-header">
+                <h3>⚡ إجراء سريع</h3>
+                <button class="qa-close-btn" id="qaCloseBtn">&times;</button>
+            </div>
+            <form id="qaForm" method="POST">
+                {% csrf_token %}
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-size: 0.9rem;">نوع الإجراء:</label>
+                    <select id="qaActionType" style="width: 100%; padding: 0.6rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 8px; color: white; font-size: 0.9rem;">
+                        <option value="attendance">بدء جلسة غياب</option>
+                        <option value="announcement">إرسال إعلان</option>
+                    </select>
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-size: 0.9rem;">المادة أو السكشن:</label>
+                    <select id="qaSubject" style="width: 100%; padding: 0.6rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 8px; color: white; font-size: 0.9rem;" required>
+                        <option value="" disabled selected>-- اختر المادة أو السكشن --</option>
+                        {% if main_subjects %}
+                        <optgroup label="المواد الأساسية">
+                            {% for subject in main_subjects %}
+                            <option value="subject-{{ subject.id }}" data-subject-id="{{ subject.id }}">مادة: {{ subject.name }}</option>
+                            {% endfor %}
+                        </optgroup>
+                        {% endif %}
+                        {% if assigned_sections %}
+                        <optgroup label="السكاشن المسندة">
+                            {% for section in assigned_sections %}
+                            <option value="section-{{ section.id }}" data-section-id="{{ section.id }}" data-subject-id="{{ section.subject.id }}">سكشن: {{ section.subject.name }} - سكشن {{ section.section_group }}</option>
+                            {% endfor %}
+                        </optgroup>
+                        {% endif %}
+                    </select>
+                </div>
+
+                <div id="qaAttendanceFields" style="display: block; margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-size: 0.9rem;">المدة (بالدقائق):</label>
+                    <input type="number" name="duration_minutes" value="5" min="1" max="60" style="width: 100%; padding: 0.6rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 8px; color: white;">
+                    <label style="margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem; color: #cbd5e1; cursor: pointer; font-size: 0.9rem;">
+                        <input type="checkbox" name="is_makeup" style="accent-color: #10b981; width: 16px; height: 16px;"> محاضرة تعويضية
+                    </label>
+                </div>
+
+                <div id="qaAnnouncementFields" style="display: none; margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-size: 0.9rem;">عنوان الإعلان:</label>
+                    <input type="text" name="title" id="qaTitle" style="width: 100%; padding: 0.6rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 8px; color: white; margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-size: 0.9rem;">المحتوى:</label>
+                    <textarea name="content" id="qaContent" style="width: 100%; padding: 0.6rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 8px; color: white; min-height: 80px; resize: vertical; margin-bottom: 1rem;"></textarea>
+                    <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-size: 0.9rem;">ينتهي في (اختياري):</label>
+                    <input type="datetime-local" name="expires_at" style="width: 100%; padding: 0.6rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 8px; color: white;">
+                </div>
+
+                <button type="submit" class="action-btn" style="width: 100%; padding: 0.8rem; background-color: var(--primary); border-color: var(--primary); font-size: 1rem; font-weight: bold; margin-top: 0.5rem;">تأكيد الإجراء</button>
+            </form>
         </div>
-    </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.filter-tab');
+            const cards = document.querySelectorAll('.subject-card');
+            const noResultsMsg = document.getElementById('no-results-msg');
+            const sectionTitles = document.querySelectorAll('.subject-section-title');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+
+                    const filterValue = tab.getAttribute('data-filter');
+                    let visibleCount = 0;
+
+                    cards.forEach(card => {
+                        const cardYear = card.getAttribute('data-year');
+                        if (filterValue === 'all' || filterValue === cardYear) {
+                            card.style.display = 'flex';
+                            visibleCount++;
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+
+                    // Handle empty state message and titles
+                    if (visibleCount === 0) {
+                        noResultsMsg.style.display = 'block';
+                        sectionTitles.forEach(title => title.style.display = 'none');
+                    } else {
+                        noResultsMsg.style.display = 'none';
+                        sectionTitles.forEach(title => title.style.display = 'block');
+                    }
+                });
+            });
+
+            // Quick Action Modal Logic
+            const fabBtn = document.getElementById('fabBtn');
+            const qaModal = document.getElementById('qaModal');
+            const qaCloseBtn = document.getElementById('qaCloseBtn');
+            const qaActionType = document.getElementById('qaActionType');
+            const qaAttendanceFields = document.getElementById('qaAttendanceFields');
+            const qaAnnouncementFields = document.getElementById('qaAnnouncementFields');
+            const qaForm = document.getElementById('qaForm');
+            const qaSubject = document.getElementById('qaSubject');
+            const qaTitle = document.getElementById('qaTitle');
+            const qaContent = document.getElementById('qaContent');
+
+            if (fabBtn && qaModal) {
+                fabBtn.addEventListener('click', () => {
+                    qaModal.style.display = 'flex';
+                });
+
+                qaCloseBtn.addEventListener('click', () => {
+                    qaModal.style.display = 'none';
+                });
+
+                qaModal.addEventListener('click', (e) => {
+                    if (e.target === qaModal) {
+                        qaModal.style.display = 'none';
+                    }
+                });
+
+                qaActionType.addEventListener('change', (e) => {
+                    if (e.target.value === 'attendance') {
+                        qaAttendanceFields.style.display = 'block';
+                        qaAnnouncementFields.style.display = 'none';
+                        qaTitle.required = false;
+                        qaContent.required = false;
+                    } else {
+                        qaAttendanceFields.style.display = 'none';
+                        qaAnnouncementFields.style.display = 'block';
+                        qaTitle.required = true;
+                        qaContent.required = true;
+                    }
+                });
+
+                qaForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    const action = qaActionType.value;
+                    if (!qaSubject.value) {
+                        alert('يرجى اختيار مادة أو سكشن');
+                        return;
+                    }
+
+                    const selectedOption = qaSubject.options[qaSubject.selectedIndex];
+                    const val = selectedOption.value; // "subject-X" or "section-Y"
+                    const subjectId = selectedOption.getAttribute('data-subject-id');
+                    const sectionId = selectedOption.getAttribute('data-section-id');
+
+                    let url = '';
+                    
+                    if (action === 'attendance') {
+                        if (val.startsWith('subject-')) {
+                            url = `/doctor/attendance/start/${subjectId}/`;
+                        } else if (val.startsWith('section-')) {
+                            url = `/doctor/attendance/start/${subjectId}/section/${sectionId}/`;
+                        }
+                    } else if (action === 'announcement') {
+                        if (val.startsWith('subject-')) {
+                            url = `/doctor/announcement/create/${subjectId}/`;
+                        } else if (val.startsWith('section-')) {
+                            url = `/doctor/announcement/create/section/${sectionId}/`;
+                        }
+                    }
+                    
+                    if (url) {
+                        qaForm.action = url;
+                        qaForm.submit();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

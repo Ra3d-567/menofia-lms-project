@@ -7,6 +7,7 @@ urlpatterns = [
     path('doctor/dashboard/', views.doctor_dashboard, name='doctor_dashboard'),
     path('student/dashboard/', views.student_dashboard, name='student_dashboard'),
     path('student/settings/', views.student_settings, name='student_settings'),
+    path('doctor/settings/', views.doctor_settings, name='doctor_settings'),
     path('doctor/upload/<int:subject_id>/', views.upload_material, name='upload_material'),
     path('doctor/upload/book/<int:subject_id>/', views.upload_official_book, name='upload_official_book'),
     path('doctor/upload/section/<int:section_id>/', views.upload_material_section, name='upload_material_section'),
