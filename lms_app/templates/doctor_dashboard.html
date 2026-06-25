@@ -1,0 +1,705 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard - منصة كلية التربية النوعية - جامعة المنوفية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --surface-dark: rgba(30, 58, 138, 0.15);
+            --surface-hover: rgba(30, 58, 138, 0.25);
+            --primary: #1d4ed8;
+            --primary-glow: rgba(29, 78, 216, 0.5);
+            --accent: #d4af37;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .navbar {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: auto;
+            object-fit: contain;
+            margin-left: 0.5rem;
+        }
+
+        .user-greeting {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            color: white;
+            border-color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            padding: 3rem 2rem;
+            box-sizing: border-box;
+        }
+
+        .header-section {
+            margin-bottom: 3rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .header-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .header-section p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .subject-card {
+            background-color: var(--surface-dark);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.75rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 15px var(--primary-glow);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .subject-card:hover::before {
+            opacity: 1;
+        }
+
+        .subject-card h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
+            color: #fff;
+        }
+
+        .subject-code {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            align-self: flex-start;
+        }
+
+        .subject-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .enrollment-count {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .enrollment-count div {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .enrollment-count svg {
+            width: 18px;
+            height: 18px;
+            fill: #94a3b8;
+        }
+
+        .action-btn {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid var(--border);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--surface-dark);
+            border-radius: 16px;
+            border: 1px dashed var(--border);
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div style="display: flex; align-items: center;">
+            <img src="{% static 'images/logo_nav.png' %}" alt="University Logo" class="nav-logo me-2">
+            <h1>منصة كلية التربية النوعية</h1>
+        </div>
+        <div class="user-greeting">
+            <span>مرحباً، دكتور {{ user.last_name|default:user.username }}</span>
+            <a href="{% url 'logout' %}" class="logout-btn">تسجيل الخروج</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% if messages %}
+            <div style="margin-bottom: 2rem;">
+                {% for message in messages %}
+                    <div style="padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; {% if message.tags == 'error' %}background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171;{% elif message.tags == 'success' %}background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399;{% else %}background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa;{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="header-section">
+            <h2>لوحة تحكم الدكتور</h2>
+            <p>نظرة عامة على المواد والسكاشن المسندة إليك وعدد الطلاب المسجلين.</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <h3 style="grid-column: 1 / -1; color: #fff; margin-bottom: -0.5rem;">المواد الأساسية</h3>
+            {% if main_subjects %}
+                {% for subject in main_subjects %}
+                <div class="subject-card">
+                    <!-- Row 1: Header -->
+                    <div style="margin-bottom: 1rem;">
+                        <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem;">{{ subject.name }}</h3>
+                        <span class="badge">{{ subject.code }}</span>
+                    </div>
+
+                    <!-- Row 2: Schedule Info -->
+                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between;">
+                            <span style="font-size: 0.9rem; color: #cbd5e1;">الموعد: <strong>{{ subject.get_lecture_day_display|default:"لم يحدد" }}</strong></span>
+                            <form action="{% url 'update_schedule' subject.id %}" method="POST" style="display: flex; gap: 0.5rem; align-items: center;">
+                                {% csrf_token %}
+                                <select name="day" style="padding: 0.4rem; border-radius: 6px; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); color: white; font-size: 0.85rem;">
+                                    {% for value, label in DAYS_OF_WEEK %}
+                                        <option value="{{ value }}" {% if subject.lecture_day == value %}selected{% endif %} style="color: black;">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="badge secondary" style="cursor: pointer; border: 1px solid var(--border); font-size: 0.85rem; padding: 0.4rem 0.8rem;">تحديث اليوم</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Attendance Actions -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-bottom: 1.5rem;">
+                        <form action="{% url 'start_attendance_session' subject.id %}" method="POST" style="display: flex; align-items: center; gap: 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.5rem 1rem; border-radius: 8px;">
+                            {% csrf_token %}
+                            <input type="number" name="duration_minutes" value="5" min="1" max="60" required style="width: 50px; padding: 0.4rem; border-radius: 6px; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(16, 185, 129, 0.3); color: white; text-align: center;">
+                            <span style="font-size: 0.85rem; color: #34d399; margin-left: -0.25rem;">دقيقة</span>
+                            <button type="submit" class="action-btn" style="padding: 0.5rem 1rem; background-color: #10b981; color: white; border: none; cursor: pointer; font-weight: 500;">⏱️ بدء تسجيل الغياب بالرمز</button>
+                            <div style="width: 1px; height: 24px; background: rgba(16, 185, 129, 0.3);"></div>
+                            <label style="font-size: 0.85rem; color: #34d399; display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                                <input type="checkbox" name="is_makeup" style="accent-color: #10b981; width: 16px; height: 16px;">
+                                محاضرة تعويضية
+                            </label>
+                        </form>
+
+                        <a href="{% url 'export_attendance_csv' subject.id %}" class="btn-secondary" style="padding: 0.6rem 1rem; text-decoration: none; display: flex; align-items: center; gap: 0.4rem; border-radius: 8px;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                            تصدير CSV
+                        </a>
+                    </div>
+
+                    {% for active in active_sessions %}
+                        {% if active.subject_id == subject.id and active.section_id is None %}
+                            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; height: auto; min-height: fit-content; padding: 1.5rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-start; flex-direction: row; gap: 0.5rem; flex-wrap: wrap;">
+                                <div>
+                                    <h4 style="margin: 0; color: #10b981; font-size: 0.9rem; white-space: normal; line-height: 1.5;">رمز الغياب النشط</h4>
+                                    <p style="margin: 0.25rem 0 0 0; color: #e2e8f0; font-size: 1.5rem; font-weight: bold; font-family: monospace; letter-spacing: 2px;">{{ active.session.pin_code }}</p>
+                                </div>
+                                <div style="text-align: right; display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end;">
+                                    <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">ينتهي في {{ active.expires_at|time:"h:i A" }}</span>
+                                    <form method="POST" action="{% url 'end_attendance_session' active.session.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="action-btn" style="padding: 0.3rem 0.6rem; background-color: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); color: #fca5a5; font-size: 0.75rem;">إنهاء الجلسة الآن</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if subject.attendance_sessions.all %}
+                        <div style="margin-bottom: 1.5rem; background: rgba(30, 58, 138, 0.1); border: 1px solid rgba(30, 58, 138, 0.2); border-radius: 8px; padding: 1rem;">
+                            <h4 style="margin: 0 0 0.75rem 0; font-size: 0.95rem; color: #93c5fd; display: flex; align-items: center; gap: 0.5rem;">📊 سجل الغياب السابق</h4>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                {% for session in subject.attendance_sessions.all|slice:":5" %}
+                                    {% if not session.subject_section %}
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: rgba(0,0,0,0.2); border-radius: 6px;">
+                                            <span style="font-size: 0.85rem; color: #e2e8f0;">{{ session.created_at|date:"M d, Y - h:i A" }} {% if session.is_makeup_class %}<span style="color: #eab308; font-size: 0.7rem; margin-left: 0.5rem;">(تعويضية)</span>{% endif %}</span>
+                                            <div style="display: flex; gap: 0.5rem;">
+                                                <a href="{% url 'attendance_report_detail' session.id %}" class="badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; text-decoration: none; border: 1px solid rgba(59, 130, 246, 0.3);">عرض التقرير</a>
+                                                <a href="{% url 'edit_attendance' session.id %}" class="badge secondary" style="text-decoration: none; border-color: rgba(255,255,255,0.1);">تعديل</a>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <p class="subject-desc">{{ subject.description|default:"لا يوجد وصف متاح."|truncatechars:120 }}</p>
+                    
+                    <div class="official-book-section" style="margin: 1rem 0; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                        <h4 style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem; margin-top: 0; display: flex; align-items: center; gap: 0.5rem;">
+                            📚 الكتاب الرسمي للمادة
+                            {% if subject.official_book %}
+                                <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">تم رفع الكتاب</span>
+                            {% endif %}
+                        </h4>
+                        
+                        <form method="POST" action="{% url 'upload_official_book' subject.id %}" enctype="multipart/form-data" style="display: flex; flex-direction: row; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                            {% csrf_token %}
+                            <input type="file" name="official_book" required style="font-size: 0.8rem; color: #94a3b8; max-width: 250px;">
+                            <button type="submit" class="action-btn" style="padding: 0.3rem 0.8rem; background-color: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.5);">رفع/تحديث الكتاب</button>
+                        </form>
+                        {% if subject.official_book %}
+                            <a href="{{ subject.official_book.url }}" target="_blank" style="font-size: 0.8rem; color: #60a5fa; text-decoration: none;">عرض الكتاب الحالي</a>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="materials-section" style="margin: 1rem 0; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                        <h4 style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem; margin-top: 0;">وحدات ومحاضرات المادة</h4>
+                        {% if subject.materials.all %}
+                            <div style="margin-bottom: 1rem;">
+                                <h5 style="font-size: 0.8rem; color: #a78bfa; margin: 0 0 0.25rem 0;">الوحدات المرفوعة</h5>
+                                <ul style="list-style: none; padding: 0; margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #94a3b8;">
+                                    {% for material in subject.materials.all %}
+                                        {% if material.material_type == 'LECTURE' %}
+                                            <li style="margin-bottom: 0.25rem; display: flex; justify-content: space-between; align-items: center;">
+                                                <span>• {{ material.title }} ({{ material.created_at|date:"M d" }})</span>
+                                                <form action="{% url 'delete_material' material.id %}" method="POST" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" style="background: none; border: none; cursor: pointer; padding: 0;">
+                                                        <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: #ef4444;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% else %}
+                            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">لم يتم إضافة أي محاضرات بعد.</p>
+                        {% endif %}
+                        
+                        <h4 style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 0.5rem;">➕ إضافة محاضرة / وحدة</h4>
+                        <form method="POST" action="{% url 'upload_material' subject.id %}" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            {% csrf_token %}
+                            <input type="text" name="title" placeholder="عنوان المحاضرة" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                            <textarea name="description" placeholder="الوصف / ملاحظات المحاضرة (اختياري)" style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem; min-height: 60px; resize: vertical; font-family: inherit;"></textarea>
+                            <input type="url" name="video_url" placeholder="رابط فيديو (مثال: يوتيوب) (اختياري)" style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                            <label style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: -0.25rem;">رفع ملف/PDF (اختياري):</label>
+                            <input type="file" name="file" style="font-size: 0.8rem; color: #94a3b8;">
+                            <button type="submit" class="action-btn" style="align-self: flex-start; padding: 0.4rem 1rem; background-color: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.5);">إضافة المحاضرة</button>
+                        </form>
+                    </div>
+
+                    <div class="assignments-section" style="margin: 1rem 0; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                        <h4 style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem; margin-top: 0;">التكليفات</h4>
+                        {% if subject.assignments.all %}
+                            <div style="margin-bottom: 1rem;">
+                                <ul style="list-style: none; padding: 0; margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #94a3b8;">
+                                    {% for assignment in subject.assignments.all %}
+                                        {% if not assignment.subject_section %}
+                                            <li style="margin-bottom: 0.25rem; display: flex; justify-content: space-between; align-items: center;">
+                                                <span>• {{ assignment.title }} (ميعاد التسليم: {{ assignment.due_date|date:"M d" }})</span>
+                                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                                    <a href="{% url 'view_submissions' assignment.id %}" class="action-btn" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; background-color: rgba(167, 139, 250, 0.2); border-color: rgba(167, 139, 250, 0.5); text-decoration: none; color: #a78bfa;">عرض التسليمات</a>
+                                                    <form method="POST" action="{% url 'delete_assignment' assignment.id %}" onsubmit="return confirm('هل أنت متأكد من حذف هذا التكليف؟ سيتم حذف جميع تسليمات الطلاب المرتبطة به نهائياً!');" style="margin: 0;">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="action-btn" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; background-color: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); color: #fca5a5; cursor: pointer;">🗑️ حذف التكليف</button>
+                                                    </form>
+                                                </div>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% else %}
+                            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">لم يتم إنشاء أي تكليفات بعد.</p>
+                        {% endif %}
+                        
+                        <form method="POST" action="{% url 'create_assignment' subject.id %}" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            {% csrf_token %}
+                            <input type="text" name="title" placeholder="عنوان التكليف" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                            <input type="number" step="0.5" name="max_grade" placeholder="الدرجة القصوى (مثال: 100)" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                            <input type="datetime-local" name="due_date" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                            <textarea name="requirements_text" placeholder="التعليمات والمتطلبات (اختياري)..." style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem; min-height: 60px; resize: vertical; font-family: inherit;"></textarea>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="number" name="max_file_size_mb" placeholder="الحد الأقصى للملف (MB)" value="10" required style="flex: 1; padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                                <input type="text" name="allowed_extensions" placeholder="الصيغ المسموحة (مثال: pdf,zip,docx)" value="pdf,zip,docx,rar" required style="flex: 2; padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                            </div>
+                            <button type="submit" class="action-btn" style="align-self: flex-start; padding: 0.4rem 1rem; background-color: rgba(167, 139, 250, 0.2); border-color: rgba(167, 139, 250, 0.5); color: #a78bfa;">إنشاء التكليف</button>
+                        </form>
+                    </div>
+
+                    <div class="announcements-section" style="margin: 1rem 0; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                        <h4 style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem; margin-top: 0;">الإعلانات</h4>
+                        
+                        {% if subject.announcements.all %}
+                            <div style="margin-bottom: 1rem; width: 100%; overflow-x: hidden; box-sizing: border-box;">
+                                <ul style="list-style: none; padding: 0; margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #94a3b8; width: 100%; box-sizing: border-box;">
+                                    {% for announcement in subject.announcements.all %}
+                                        {% if not announcement.subject_section %}
+                                            <li style="margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.5); padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05); gap: 0.5rem; width: 100%; box-sizing: border-box;">
+                                                <div style="display: flex; flex-direction: column; flex: 1 1 auto; overflow: hidden;">
+                                                    <span style="color: #e2e8f0; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{{ announcement.title }}</span>
+                                                    <span style="font-size: 0.75rem; color: #cbd5e1;">نُشر في: {{ announcement.created_at|date:"M d, Y" }}</span>
+                                                </div>
+                                                <form action="{% url 'delete_announcement' announcement.id %}" method="POST" style="display:flex; flex: 0 0 auto; margin: 0;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" style="background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'" onmouseout="this.style.background='none'">
+                                                        <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: #ef4444;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        <h4 style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 0.5rem;">نشر إعلان</h4>
+                        <form method="POST" action="{% url 'create_announcement' subject.id %}" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            {% csrf_token %}
+                            <input type="text" name="title" placeholder="عنوان الإعلان" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                            <textarea name="content" placeholder="اكتب رسالتك للطلاب هنا..." required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem; min-height: 80px; resize: vertical; font-family: inherit;"></textarea>
+                            <label style="font-size: 0.8rem; color: #cbd5e1;">ينتهي في (اختياري):</label>
+                            <input type="datetime-local" name="expires_at" style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                            <button type="submit" class="action-btn" style="align-self: flex-start; padding: 0.4rem 1rem; background-color: rgba(234, 179, 8, 0.2); border-color: rgba(234, 179, 8, 0.5); color: #eab308;">نشر الإعلان</button>
+                        </form>
+                    </div>
+
+                    <div class="enrollment-count">
+                        <div>
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                            {{ subject.enrollments.count }} إجمالي الطلاب
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <h3>لم يتم إسناد مواد</h3>
+                    <p>لم يتم إسناد أي مواد أساسية لتدريسها بعد.</p>
+                </div>
+            {% endif %}
+
+            <h3 style="grid-column: 1 / -1; color: #fff; margin-top: 1rem; margin-bottom: -0.5rem;">السكاشن المسندة</h3>
+            {% if assigned_sections %}
+                {% for section in assigned_sections %}
+                <div class="subject-card">
+                    <!-- Row 1: Header -->
+                    <div style="margin-bottom: 1rem;">
+                        <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem;">{{ section.subject.name }}</h3>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <span class="badge secondary">{{ section.subject.code }}</span>
+                            <span class="badge" style="background: rgba(236, 72, 153, 0.15); color: #f472b6; border-color: rgba(236, 72, 153, 0.3);">سكشن {{ section.section_group }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Schedule Info -->
+                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between;">
+                            <span style="font-size: 0.9rem; color: #cbd5e1;">الموعد: <strong>{{ section.get_section_day_display|default:"لم يحدد" }}</strong></span>
+                            <form action="{% url 'update_schedule_section' section.subject.id section.id %}" method="POST" style="display: flex; gap: 0.5rem; align-items: center;">
+                                {% csrf_token %}
+                                <select name="day" style="padding: 0.4rem; border-radius: 6px; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); color: white; font-size: 0.85rem;">
+                                    {% for value, label in DAYS_OF_WEEK %}
+                                        <option value="{{ value }}" {% if section.section_day == value %}selected{% endif %} style="color: black;">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="badge secondary" style="cursor: pointer; border: 1px solid var(--border); font-size: 0.85rem; padding: 0.4rem 0.8rem;">تحديث اليوم</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Attendance Actions -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-bottom: 1.5rem;">
+                        <form action="{% url 'start_attendance_session_section' section.subject.id section.id %}" method="POST" style="display: flex; align-items: center; gap: 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.5rem 1rem; border-radius: 8px;">
+                            {% csrf_token %}
+                            <input type="number" name="duration_minutes" value="5" min="1" max="60" required style="width: 50px; padding: 0.4rem; border-radius: 6px; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(16, 185, 129, 0.3); color: white; text-align: center;">
+                            <span style="font-size: 0.85rem; color: #34d399; margin-left: -0.25rem; margin-right: -0.25rem;">دقيقة</span>
+                            <button type="submit" class="action-btn" style="padding: 0.5rem 1rem; background-color: #10b981; color: white; border: none; cursor: pointer; font-weight: 500;">⏱️ بدء تسجيل الغياب بالرمز</button>
+                            <div style="width: 1px; height: 24px; background: rgba(16, 185, 129, 0.3);"></div>
+                            <label style="font-size: 0.85rem; color: #34d399; display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                                <input type="checkbox" name="is_makeup" style="accent-color: #10b981; width: 16px; height: 16px;">
+                                محاضرة تعويضية
+                            </label>
+                        </form>
+
+                        <a href="{% url 'export_attendance_csv_section' section.subject.id section.id %}" class="btn-secondary" style="padding: 0.6rem 1rem; text-decoration: none; display: flex; align-items: center; gap: 0.4rem; border-radius: 8px;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                            تصدير CSV
+                        </a>
+                    </div>
+
+                    {% for active in active_sessions %}
+                        {% if active.subject_id == section.subject.id and active.section_id == section.id %}
+                            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; height: auto; min-height: fit-content; padding: 1.5rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-start; flex-direction: row; gap: 0.5rem; flex-wrap: wrap;">
+                                <div>
+                                    <h4 style="margin: 0; color: #10b981; font-size: 0.9rem; white-space: normal; line-height: 1.5;">رمز السكشن النشط</h4>
+                                    <p style="margin: 0.25rem 0 0 0; color: #e2e8f0; font-size: 1.5rem; font-weight: bold; font-family: monospace; letter-spacing: 2px;">{{ active.session.pin_code }}</p>
+                                </div>
+                                <div style="text-align: right; display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end;">
+                                    <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">ينتهي في {{ active.expires_at|time:"h:i A" }}</span>
+                                    <form method="POST" action="{% url 'end_attendance_session' active.session.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="action-btn" style="padding: 0.3rem 0.6rem; background-color: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); color: #fca5a5; font-size: 0.75rem;">إنهاء الجلسة الآن</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if section.section_attendance_sessions.all %}
+                        <div style="margin-bottom: 1.5rem; background: rgba(30, 58, 138, 0.1); border: 1px solid rgba(30, 58, 138, 0.2); border-radius: 8px; padding: 1rem;">
+                            <h4 style="margin: 0 0 0.75rem 0; font-size: 0.95rem; color: #93c5fd; display: flex; align-items: center; gap: 0.5rem;">📊 سجل الغياب السابق</h4>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                {% for session in section.section_attendance_sessions.all|slice:":5" %}
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: rgba(0,0,0,0.2); border-radius: 6px;">
+                                        <span style="font-size: 0.85rem; color: #e2e8f0;">{{ session.created_at|date:"M d, Y - h:i A" }} {% if session.is_makeup_class %}<span style="color: #eab308; font-size: 0.7rem; margin-left: 0.5rem;">(تعويضية)</span>{% endif %}</span>
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <a href="{% url 'attendance_report_detail' session.id %}" class="badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; text-decoration: none; border: 1px solid rgba(59, 130, 246, 0.3);">عرض التقرير</a>
+                                            <a href="{% url 'edit_attendance' session.id %}" class="badge secondary" style="text-decoration: none; border-color: rgba(255,255,255,0.1);">تعديل</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="materials-section" style="margin: 1rem 0; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                        <h4 style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem; margin-top: 0;">مواد السكشن</h4>
+                        {% if section.materials.all %}
+                            <div style="margin-bottom: 1rem;">
+                                <ul style="list-style: none; padding: 0; margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #94a3b8;">
+                                    {% for material in section.materials.all %}
+                                        <li style="margin-bottom: 0.25rem; display: flex; justify-content: space-between; align-items: center;">
+                                            <span>• {{ material.title }} ({{ material.created_at|date:"M d" }})</span>
+                                            <form action="{% url 'delete_material' material.id %}" method="POST" style="display:inline;">
+                                                {% csrf_token %}
+                                                <button type="submit" style="background: none; border: none; cursor: pointer; padding: 0;">
+                                                    <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: #ef4444;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                                </button>
+                                            </form>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% else %}
+                            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">لم يتم إضافة أي مواد للسكشن بعد.</p>
+                        {% endif %}
+                        
+                        <h4 style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 0.5rem;">➕ إضافة مادة للسكشن</h4>
+                        <form method="POST" action="{% url 'upload_material_section' section.id %}" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            {% csrf_token %}
+                            <input type="text" name="title" placeholder="عنوان المادة" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                            <textarea name="description" placeholder="الوصف / الملاحظات (اختياري)" style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem; min-height: 60px; resize: vertical; font-family: inherit;"></textarea>
+                            <input type="url" name="video_url" placeholder="رابط فيديو (مثال: يوتيوب) (اختياري)" style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                            <label style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: -0.25rem;">رفع ملف/PDF (اختياري):</label>
+                            <input type="file" name="file" style="font-size: 0.8rem; color: #94a3b8;">
+                            <button type="submit" class="action-btn" style="align-self: flex-start; padding: 0.4rem 1rem; background-color: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.5);">إضافة للسكشن</button>
+                        </form>
+                    </div>
+
+                    <div class="assignments-section" style="margin: 1rem 0; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                        <h4 style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem; margin-top: 0;">تكليفات السكشن</h4>
+                        {% if section.assignments.all %}
+                            <div style="margin-bottom: 1rem;">
+                                <ul style="list-style: none; padding: 0; margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #94a3b8;">
+                                    {% for assignment in section.assignments.all %}
+                                        <li style="margin-bottom: 0.25rem; display: flex; justify-content: space-between; align-items: center;">
+                                            <span>• {{ assignment.title }} (ميعاد التسليم: {{ assignment.due_date|date:"M d" }})</span>
+                                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                                <a href="{% url 'view_submissions' assignment.id %}" class="action-btn" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; background-color: rgba(167, 139, 250, 0.2); border-color: rgba(167, 139, 250, 0.5); text-decoration: none; color: #a78bfa;">عرض التسليمات</a>
+                                                <form method="POST" action="{% url 'delete_assignment' assignment.id %}" onsubmit="return confirm('هل أنت متأكد من حذف هذا التكليف؟ سيتم حذف جميع تسليمات الطلاب المرتبطة به نهائياً!');" style="margin: 0;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="action-btn" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; background-color: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); color: #fca5a5; cursor: pointer;">🗑️ حذف التكليف</button>
+                                                </form>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% else %}
+                            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">لم يتم إنشاء أي تكليفات بعد.</p>
+                        {% endif %}
+                        
+                        <form method="POST" action="{% url 'create_assignment_section' section.id %}" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            {% csrf_token %}
+                            <input type="text" name="title" placeholder="عنوان التكليف" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                            <input type="number" step="0.5" name="max_grade" placeholder="الدرجة القصوى (مثال: 100)" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                            <input type="datetime-local" name="due_date" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                            <textarea name="requirements_text" placeholder="التعليمات والمتطلبات (اختياري)..." style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem; min-height: 60px; resize: vertical; font-family: inherit;"></textarea>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="number" name="max_file_size_mb" placeholder="الحد الأقصى للملف (MB)" value="10" required style="flex: 1; padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                                <input type="text" name="allowed_extensions" placeholder="الصيغ المسموحة (مثال: pdf,zip,docx)" value="pdf,zip,docx,rar" required style="flex: 2; padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                            </div>
+                            <button type="submit" class="action-btn" style="align-self: flex-start; padding: 0.4rem 1rem; background-color: rgba(167, 139, 250, 0.2); border-color: rgba(167, 139, 250, 0.5); color: #a78bfa;">إنشاء التكليف</button>
+                        </form>
+                    </div>
+
+                    <div class="announcements-section" style="margin: 1rem 0; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                        <h4 style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem; margin-top: 0;">إعلانات السكشن</h4>
+                        
+                        {% if section.section_announcements.all %}
+                            <div style="margin-bottom: 1rem; width: 100%; overflow-x: hidden; box-sizing: border-box;">
+                                <ul style="list-style: none; padding: 0; margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #94a3b8; width: 100%; box-sizing: border-box;">
+                                    {% for announcement in section.section_announcements.all %}
+                                        <li style="margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.5); padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05); gap: 0.5rem; width: 100%; box-sizing: border-box;">
+                                            <div style="display: flex; flex-direction: column; flex: 1 1 auto; overflow: hidden;">
+                                                <span style="color: #e2e8f0; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{{ announcement.title }}</span>
+                                                <span style="font-size: 0.75rem; color: #cbd5e1;">نُشر في: {{ announcement.created_at|date:"M d, Y" }}</span>
+                                            </div>
+                                            <form action="{% url 'delete_announcement' announcement.id %}" method="POST" style="display:flex; flex: 0 0 auto; margin: 0;">
+                                                {% csrf_token %}
+                                                <button type="submit" style="background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'" onmouseout="this.style.background='none'">
+                                                    <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: #ef4444;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                                </button>
+                                            </form>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        <h4 style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 0.5rem;">نشر إعلان للسكشن</h4>
+                        <form method="POST" action="{% url 'create_announcement_section' section.id %}" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            {% csrf_token %}
+                            <input type="text" name="title" placeholder="عنوان الإعلان" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                            <textarea name="content" placeholder="اكتب رسالتك لطلاب السكشن هنا..." required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem; min-height: 80px; resize: vertical; font-family: inherit;"></textarea>
+                            <label style="font-size: 0.8rem; color: #cbd5e1;">ينتهي في (اختياري):</label>
+                            <input type="datetime-local" name="expires_at" style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+                            <button type="submit" class="action-btn" style="align-self: flex-start; padding: 0.4rem 1rem; background-color: rgba(234, 179, 8, 0.2); border-color: rgba(234, 179, 8, 0.5); color: #eab308;">نشر للسكشن</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <h3>لم يتم إسناد سكاشن</h3>
+                    <p>لم يتم إسنادك كدكتور لأي سكشن.</p>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>

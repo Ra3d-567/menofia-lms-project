@@ -1,0 +1,207 @@
+                    <div class="subject-card">
+                        <span class="subject-code">{{ subject.code }}</span>
+                        <h3>{{ subject.name }}</h3>
+                        
+                        <div style="margin-top: 0.5rem; margin-bottom: 1rem; padding: 0.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 6px; display: inline-block;">
+                            <span style="font-size: 0.8rem; color: #34d399; font-weight: 500;">الحضور: {{ subject.attendance_attended }} / {{ subject.attendance_total }}</span>
+                        </div>
+                        <p class="subject-desc">{{ subject.description|default:"لا يوجد وصف متاح."|truncatechars:120 }}</p>
+                        
+                        {% if subject.official_book %}
+                        <div style="margin-top: 1rem; padding-bottom: 0.5rem;">
+                            <a href="{{ subject.official_book.url }}" target="_blank" class="action-btn" style="display: inline-flex; align-items: center; gap: 0.5rem; background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.4)); border: 1px solid rgba(59, 130, 246, 0.5); padding: 0.6rem 1rem; border-radius: 8px; color: #fff; font-weight: 500; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(59,130,246,0.3)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                                📖 تحميل الكتاب الرسمي للمادة
+                            </a>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="materials-section" style="margin-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 1rem;">
+                        <h4 style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem; margin-top: 0;">المواد الدراسية</h4>
+                        {% if subject.materials.all %}
+                            <div style="margin-bottom: 1rem;">
+                                <h5 style="font-size: 0.8rem; color: #a78bfa; margin: 0 0 0.25rem 0;">المحاضرات</h5>
+                                <ul style="list-style: none; padding: 0; margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #94a3b8;">
+                                    {% for material in subject.materials.all %}
+                                        {% if material.material_type == 'LECTURE' %}
+                                            <li style="margin-bottom: 0.75rem; background: rgba(15, 23, 42, 0.4); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                                                    <span style="color: #e2e8f0; font-weight: 600; font-size: 0.95rem;">{{ material.title }}</span>
+                                                    <span style="font-size: 0.7rem; color: #64748b;">{{ material.created_at|date:"M d, Y" }}</span>
+                                                </div>
+                                                {% if material.description %}
+                                                    <p style="margin: 0 0 0.75rem 0; font-size: 0.8rem; color: #94a3b8; line-height: 1.4; white-space: pre-wrap;">{{ material.description }}</p>
+                                                {% endif %}
+                                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                                    {% if material.video_url %}
+                                                        <a href="{{ material.video_url }}" target="_blank" class="badge" style="background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); text-decoration: none; padding: 0.3rem 0.6rem; display: inline-flex; align-items: center; gap: 0.2rem;">
+                                                            <span style="font-size: 0.9rem;">🎬</span> مشاهدة الفيديو
+                                                        </a>
+                                                    {% endif %}
+                                                    {% if material.file %}
+                                                        <a href="{{ material.file.url }}" download class="badge secondary" style="text-decoration: none; padding: 0.3rem 0.6rem; display: inline-flex; align-items: center; gap: 0.2rem;">
+                                                            <span style="font-size: 0.9rem;">📄</span> تحميل الملف
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+
+                                <h5 style="font-size: 0.8rem; color: #a78bfa; margin: 1rem 0 0.25rem 0;">التكليفات</h5>
+                                <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.85rem; color: #94a3b8;">
+                                    {% for assignment in subject.assignments.all %}
+                                        {% if not assignment.subject_section %}
+                                            <li style="margin-bottom: 0.5rem; background: rgba(15, 23, 42, 0.3); padding: 0.75rem; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                                    <span style="color: #e2e8f0; font-weight: 500;">{{ assignment.title }}</span>
+                                                    <span style="font-size: 0.75rem; color: #cbd5e1;" class="assignment-timer" data-deadline="{{ assignment.due_date|date:'c' }}">ميعاد التسليم: {{ assignment.due_date|date:"M d, Y H:i" }}</span>
+                                                </div>
+                                                
+                                                {% if assignment.requirements_text %}
+                                                <p style="margin: 0.5rem 0; font-size: 0.8rem; color: #94a3b8; line-height: 1.4; white-space: pre-wrap;">{{ assignment.requirements_text }}</p>
+                                                {% endif %}
+                                                <div style="margin-bottom: 0.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                                    <span class="badge secondary" style="font-size: 0.7rem; padding: 0.2rem 0.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">الصيغ المسموحة: {{ assignment.allowed_extensions|upper }}</span>
+                                                    <span class="badge secondary" style="font-size: 0.7rem; padding: 0.2rem 0.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">الحد الأقصى للحجم: {{ assignment.max_file_size_mb }}MB</span>
+                                                </div>
+                                                
+                                                {% if assignment.user_submission %}
+                                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                                                        {% if assignment.user_submission.grade is not None %}
+                                                            <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">✅ تم التقييم: {{ assignment.user_submission.grade }} / {{ assignment.max_grade }}</span>
+                                                        {% else %}
+                                                            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                                                                <span class="badge secondary" style="background: rgba(234, 179, 8, 0.15); color: #eab308; border-color: rgba(234, 179, 8, 0.3);">⏳ في انتظار التقييم</span>
+                                                                <form method="POST" action="{% url 'unsubmit_assignment' assignment.user_submission.id %}" style="margin: 0;">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="badge" style="background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.3)'" onmouseout="this.style.background='rgba(239,68,68,0.15)'">❌ إلغاء التسليم / تعديل التكليف</button>
+                                                                </form>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    {% if assignment.user_submission.feedback %}
+                                                        <blockquote style="margin: 0.5rem 0 0 0; padding: 0.5rem; background: rgba(0,0,0,0.2); border-left: 3px solid #60a5fa; color: #93c5fd; font-style: italic; font-size: 0.8rem; border-radius: 0 4px 4px 0;">
+                                                            "{{ assignment.user_submission.feedback }}"
+                                                        </blockquote>
+                                                    {% endif %}
+                                                {% else %}
+                                                    {% if now > assignment.due_date %}
+                                                        <div style="margin-top: 0.5rem; padding: 0.5rem; text-align: center; color: #fca5a5; background: rgba(239, 68, 68, 0.1); border-radius: 6px;">
+                                                            <span class="badge" style="background: rgba(239, 68, 68, 0.15); color: #fca5a5; border-color: rgba(239, 68, 68, 0.3);">❌ فات ميعاد التسليم</span>
+                                                            <p style="margin: 0.25rem 0 0 0; font-size: 0.75rem;">⏳ انتهى وقت التسليم</p>
+                                                        </div>
+                                                    {% else %}
+                                                    <form method="POST" action="{% url 'submit_assignment' assignment.id %}" enctype="multipart/form-data" style="display: flex; flex-direction: row; gap: 0.5rem; align-items: center; margin-top: 0.5rem;">
+                                                        {% csrf_token %}
+                                                        <input type="file" name="file" required style="font-size: 0.75rem; color: #94a3b8; max-width: 200px;">
+                                                        <button type="submit" class="badge" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); cursor: pointer;">رفع الملف</button>
+                                                    </form>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+
+                                <h5 style="font-size: 0.8rem; color: #60a5fa; margin: 1.5rem 0 0.25rem 0;">مواد سكشن {{ request.user.section_group }}</h5>
+                                <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.85rem; color: #94a3b8;">
+                                    {% for material in subject.materials.all %}
+                                        {% if material.material_type == 'SECTION' and material.subject_section.section_group == request.user.section_group %}
+                                            <li style="margin-bottom: 0.75rem; background: rgba(15, 23, 42, 0.4); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                                                    <span style="color: #e2e8f0; font-weight: 600; font-size: 0.95rem;">{{ material.title }}</span>
+                                                    <span style="font-size: 0.7rem; color: #64748b;">{{ material.created_at|date:"M d, Y" }}</span>
+                                                </div>
+                                                {% if material.description %}
+                                                    <p style="margin: 0 0 0.75rem 0; font-size: 0.8rem; color: #94a3b8; line-height: 1.4; white-space: pre-wrap;">{{ material.description }}</p>
+                                                {% endif %}
+                                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                                    {% if material.video_url %}
+                                                        <a href="{{ material.video_url }}" target="_blank" class="badge" style="background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); text-decoration: none; padding: 0.3rem 0.6rem; display: inline-flex; align-items: center; gap: 0.2rem;">
+                                                            <span style="font-size: 0.9rem;">🎬</span> مشاهدة الفيديو
+                                                        </a>
+                                                    {% endif %}
+                                                    {% if material.file %}
+                                                        <a href="{{ material.file.url }}" download class="badge secondary" style="text-decoration: none; padding: 0.3rem 0.6rem; display: inline-flex; align-items: center; gap: 0.2rem;">
+                                                            <span style="font-size: 0.9rem;">📄</span> تحميل الملف
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+
+                                <h5 style="font-size: 0.8rem; color: #60a5fa; margin: 1rem 0 0.25rem 0;">تكليفات سكشن {{ request.user.section_group }}</h5>
+                                <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.85rem; color: #94a3b8;">
+                                    {% for assignment in subject.assignments.all %}
+                                        {% if assignment.subject_section.section_group == request.user.section_group %}
+                                            <li style="margin-bottom: 0.5rem; background: rgba(15, 23, 42, 0.3); padding: 0.75rem; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                                    <span style="color: #e2e8f0; font-weight: 500;">{{ assignment.title }}</span>
+                                                    <span style="font-size: 0.75rem; color: #cbd5e1;" class="assignment-timer" data-deadline="{{ assignment.due_date|date:'c' }}">ميعاد التسليم: {{ assignment.due_date|date:"M d, Y H:i" }}</span>
+                                                </div>
+                                                
+                                                {% if assignment.requirements_text %}
+                                                <p style="margin: 0.5rem 0; font-size: 0.8rem; color: #94a3b8; line-height: 1.4; white-space: pre-wrap;">{{ assignment.requirements_text }}</p>
+                                                {% endif %}
+                                                <div style="margin-bottom: 0.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                                    <span class="badge secondary" style="font-size: 0.7rem; padding: 0.2rem 0.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">الصيغ المسموحة: {{ assignment.allowed_extensions|upper }}</span>
+                                                    <span class="badge secondary" style="font-size: 0.7rem; padding: 0.2rem 0.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">الحد الأقصى للحجم: {{ assignment.max_file_size_mb }}MB</span>
+                                                </div>
+                                                
+                                                {% if assignment.user_submission %}
+                                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                                                        {% if assignment.user_submission.grade is not None %}
+                                                            <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">✅ تم التقييم: {{ assignment.user_submission.grade }} / {{ assignment.max_grade }}</span>
+                                                        {% else %}
+                                                            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                                                                <span class="badge secondary" style="background: rgba(234, 179, 8, 0.15); color: #eab308; border-color: rgba(234, 179, 8, 0.3);">⏳ في انتظار التقييم</span>
+                                                                <form method="POST" action="{% url 'unsubmit_assignment' assignment.user_submission.id %}" style="margin: 0;">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="badge" style="background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.3)'" onmouseout="this.style.background='rgba(239,68,68,0.15)'">❌ إلغاء التسليم / تعديل التكليف</button>
+                                                                </form>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    {% if assignment.user_submission.feedback %}
+                                                        <blockquote style="margin: 0.5rem 0 0 0; padding: 0.5rem; background: rgba(0,0,0,0.2); border-left: 3px solid #60a5fa; color: #93c5fd; font-style: italic; font-size: 0.8rem; border-radius: 0 4px 4px 0;">
+                                                            "{{ assignment.user_submission.feedback }}"
+                                                        </blockquote>
+                                                    {% endif %}
+                                                {% else %}
+                                                    {% if now > assignment.due_date %}
+                                                        <div style="margin-top: 0.5rem; padding: 0.5rem; text-align: center; color: #fca5a5; background: rgba(239, 68, 68, 0.1); border-radius: 6px;">
+                                                            <span class="badge" style="background: rgba(239, 68, 68, 0.15); color: #fca5a5; border-color: rgba(239, 68, 68, 0.3);">❌ فات ميعاد التسليم</span>
+                                                            <p style="margin: 0.25rem 0 0 0; font-size: 0.75rem;">⏳ انتهى وقت التسليم</p>
+                                                        </div>
+                                                    {% else %}
+                                                    <form method="POST" action="{% url 'submit_assignment' assignment.id %}" enctype="multipart/form-data" style="display: flex; flex-direction: row; gap: 0.5rem; align-items: center; margin-top: 0.5rem;">
+                                                        {% csrf_token %}
+                                                        <input type="file" name="file" required style="font-size: 0.75rem; color: #94a3b8; max-width: 200px;">
+                                                        <button type="submit" class="badge" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); cursor: pointer;">رفع الملف</button>
+                                                    </form>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% else %}
+                            <p style="font-size: 0.85rem; color: #64748b; margin: 0;">لا توجد مواد دراسية حتى الآن.</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="professor-info">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                        {% if subject.professor %}
+                            دكتور {{ subject.professor.last_name|default:subject.professor.username }}
+                        {% else %}
+                            <span style="color: var(--text-muted); font-style: italic;">في انتظار التعيين</span>
+                        {% endif %}
+                    </div>
+                </div>

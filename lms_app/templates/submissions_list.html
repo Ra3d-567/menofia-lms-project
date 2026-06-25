@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التسليمات - {{ assignment.title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --surface-dark: #1e293b;
+            --surface-hover: #334155;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: var(--surface-dark);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .header-section {
+            margin-bottom: 2rem;
+            background: var(--surface-dark);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .header-section h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
+        }
+
+        .header-section p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .submissions-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .submission-card {
+            background: var(--surface-dark);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+            transition: all 0.2s;
+        }
+
+        .submission-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .student-info h3 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1.1rem;
+            color: #e2e8f0;
+        }
+
+        .student-info p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .action-area {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .grade-form {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .grade-input {
+            width: 80px;
+            padding: 0.5rem;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: white;
+            font-family: inherit;
+        }
+
+        .grade-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <h1>منصة كلية التربية النوعية</h1>
+        <a href="{% url 'doctor_dashboard' %}" class="btn btn-secondary">العودة للوحة التحكم →</a>
+    </nav>
+
+    <div class="container">
+        <div class="header-section">
+            <h2>{{ assignment.title }}</h2>
+            <p>المادة: {{ assignment.subject.name }} {% if assignment.subject_section %}(سكشن {{ assignment.subject_section.section_group }}){% endif %}</p>
+            <p>ميعاد التسليم: {{ assignment.due_date|date:"F d, Y, h:i A" }} | الدرجة القصوى: {{ assignment.max_grade }}</p>
+        </div>
+
+        <div class="submissions-grid">
+            {% if submissions %}
+                {% for submission in submissions %}
+                <div class="submission-card">
+                    <div class="student-info">
+                        <h3>{{ submission.student.first_name }} {{ submission.student.last_name }}</h3>
+                        <p>الرقم الجامعي: {{ submission.student.university_id }} | تم التسليم: {{ submission.submitted_at|date:"M d, H:i" }}</p>
+                    </div>
+                    
+                    <div class="action-area">
+                        {% if submission.submitted_file %}
+                            <a href="{{ submission.submitted_file.url }}" download class="btn btn-secondary">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                                تحميل الملف
+                            </a>
+                        {% endif %}
+
+                        {% if submission.grade is not None %}
+                            <span class="badge">✅ تم التقييم: {{ submission.grade }} / {{ assignment.max_grade }}</span>
+                        {% else %}
+                            <span class="badge" style="background: rgba(234, 179, 8, 0.15); color: #eab308; border-color: rgba(234, 179, 8, 0.3);">⏳ في انتظار التقييم</span>
+                        {% endif %}
+
+                        <form method="POST" action="{% url 'grade_submission' submission.id %}" style="display: flex; flex-direction: column; gap: 0.5rem; width: 300px;">
+                            {% csrf_token %}
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="number" step="0.5" name="grade" class="grade-input" placeholder="الدرجة" value="{{ submission.grade|default:'' }}" required max="{{ assignment.max_grade }}" min="0" style="flex: 1;">
+                                <button type="submit" class="btn btn-primary">حفظ</button>
+                            </div>
+                            <textarea name="feedback" placeholder="ملاحظات وتقييم (اختياري)..." style="width: 100%; padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: white; font-family: inherit; font-size: 0.85rem; resize: vertical; min-height: 60px; box-sizing: border-box;">{{ submission.feedback|default:'' }}</textarea>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div style="text-align: center; padding: 3rem; background: var(--surface-dark); border-radius: 12px; border: 1px solid var(--border);">
+                    <svg viewBox="0 0 24 24" style="width: 48px; height: 48px; fill: #475569; margin-bottom: 1rem;">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                    <h3 style="margin:0; color: #e2e8f0;">لا توجد تسليمات بعد</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">لم يقم أي طالب برفع إجابته لهذا التكليف حتى الآن.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>
