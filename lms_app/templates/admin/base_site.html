@@ -1,0 +1,45 @@
+{% extends "admin/base_site.html" %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* Clean and responsive Flexbox layout for filter_horizontal widget */
+    .selector {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+        gap: 15px !important;
+        width: 100% !important;
+        clear: both !important;
+    }
+    .selector-available, .selector-chosen {
+        flex: 1 1 45% !important;
+        width: auto !important;
+        float: none !important; /* Disable standard Django floats */
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    .selector-chooser {
+        flex: 0 0 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        float: none !important;
+        margin: 0 !important;
+        padding: 0 10px !important;
+    }
+    .selector .selector-available select,
+    .selector .selector-chosen select {
+        width: 100% !important;
+        min-height: 350px !important;
+        flex-grow: 1 !important;
+    }
+    /* Fix the filter input fields to match width */
+    .selector-available input[type="text"], 
+    .selector-chosen input[type="text"] {
+        width: 100% !important;
+        margin-bottom: 10px !important;
+    }
+</style>
+{% endblock %}

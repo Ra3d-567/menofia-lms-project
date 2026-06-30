@@ -5,25 +5,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor Dashboard - منصة كلية التربية النوعية - جامعة المنوفية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=Inter:wght@500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-dark: #0f172a;
-            --surface-dark: rgba(30, 58, 138, 0.15);
-            --surface-hover: rgba(30, 58, 138, 0.25);
-            --primary: #1d4ed8;
-            --primary-glow: rgba(29, 78, 216, 0.5);
-            --accent: #d4af37;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: rgba(255, 255, 255, 0.1);
+
+        /* Default Body Font (Comfortable Reading) */
+        body, p, span, div, textarea, select {
+            font-family: 'Tajawal', sans-serif !important;
         }
+
+        /* Headings (Strong and Formal) */
+        h1, h2, h3, h4, h5, h6, .subject-info h3 {
+            font-family: 'Cairo', sans-serif !important;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* Numbers, Codes, and UI Elements (Modern and Sharp) */
+        .subject-code-badge, .student-count-badge, .badge, .countdown-timer, .pin-code-display, input, button, a.action-btn {
+            font-family: 'Inter', 'Tajawal', sans-serif !important;
+        }
+
+        /* Form Inputs Override */
+        input[type="text"], input[type="password"], input[type="email"], input[type="number"] {
+            font-family: 'Inter', 'Tajawal', sans-serif !important;
+        }
+
+        
+        /* LIGHT MODE (Default) */
+        :root {
+            --bg-main: #f1f5f9;       /* Slate 100 - Soft off-white */
+            --surface-card: #ffffff;  /* Pure white cards */
+            --text-primary: #0f172a;  /* Slate 900 - Deep dark blue */
+            --text-muted: #64748b;    /* Slate 500 */
+            --brand-primary: #4f46e5; /* Indigo 600 */
+            --brand-hover: #4338ca;   /* Indigo 700 */
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-hover: 0 20px 25px -5px rgba(79, 70, 229, 0.15); /* Brand tinted shadow */
+            --transition-speed: 0.3s;
+        }
+
+        /* DARK MODE */
+        [data-theme="dark"] {
+            --bg-main: #0f172a;       /* Slate 900 */
+            --surface-card: #1e293b;  /* Slate 800 */
+            --text-primary: #f8fafc;  /* Slate 50 */
+            --text-muted: #94a3b8;    /* Slate 400 */
+            --brand-primary: #3b82f6; /* Blue 500 */
+            --brand-hover: #60a5fa;   /* Blue 400 */
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.3);
+            --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.5);
+            --shadow-hover: 0 20px 25px -5px rgba(59, 130, 246, 0.25);
+        }
+
+        /* GLOBAL STYLES */
+        body {
+            background-color: var(--bg-main) !important;
+            color: var(--text-primary) !important;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
+        /* MODERN CARD STYLING */
+        .interactive-card, .subject-card, .panel-card, .stats-card {
+            background-color: var(--surface-card) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 16px !important;
+            box-shadow: var(--shadow-md) !important;
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease, border-color var(--transition-speed) ease !important;
+        }
+        .interactive-card:hover, .subject-card:hover, a.interactive-card:hover {
+            transform: translateY(-5px) !important;
+            box-shadow: var(--shadow-hover) !important;
+            border-color: var(--brand-primary) !important;
+        }
+
+        /* BUTTONS & BADGES */
+        .btn-primary { background-color: var(--brand-primary) !important; color: white !important; border: none; border-radius: 8px; transition: all 0.2s ease; }
+        .btn-primary:hover { background-color: var(--brand-hover) !important; transform: scale(1.02); }
+        .badge { background-color: rgba(79, 70, 229, 0.1); color: var(--brand-primary); }
+        [data-theme="dark"] .badge { background-color: rgba(59, 130, 246, 0.15); }
+
 
         body {
             margin: 0;
             font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            background-color: var(--bg-main);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -32,9 +101,9 @@
 
         .navbar {
             width: 100%;
-            background: rgba(30, 41, 59, 0.7);
+            background: var(--surface-card);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--border-color);
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
@@ -71,7 +140,7 @@
         .logout-btn {
             background-color: transparent;
             color: var(--text-muted);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-color);
             padding: 0.5rem 1rem;
             border-radius: 6px;
             text-decoration: none;
@@ -117,9 +186,9 @@
         }
 
         .subject-card {
-            background-color: var(--surface-dark);
+            background-color: var(--surface-card);
             backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 1.25rem;
             transition: all 0.3s ease;
@@ -181,11 +250,11 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            color: #e2e8f0;
+            color: var(--border-color);
             font-size: 0.95rem;
             font-weight: 500;
             padding-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border-color);
         }
 
         .enrollment-count div {
@@ -197,13 +266,13 @@
         .enrollment-count svg {
             width: 18px;
             height: 18px;
-            fill: #94a3b8;
+            fill: var(--text-muted);
         }
 
         .action-btn {
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: var(--border-color);
             color: #fff;
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-color);
             padding: 0.4rem 0.8rem;
             border-radius: 6px;
             font-size: 0.85rem;
@@ -213,8 +282,8 @@
         }
 
         .action-btn:hover {
-            background-color: var(--primary);
-            border-color: var(--primary);
+            background-color: var(--brand-primary);
+            border-color: var(--brand-primary);
             transform: scale(1.02);
             box-shadow: 0 4px 12px var(--primary-glow);
         }
@@ -222,9 +291,9 @@
         .empty-state {
             text-align: center;
             padding: 4rem 2rem;
-            background: var(--surface-dark);
+            background: var(--surface-card);
             border-radius: 16px;
-            border: 1px dashed var(--border);
+            border: 1px dashed var(--border-color);
             color: var(--text-muted);
             grid-column: 1 / -1;
         }
@@ -246,10 +315,10 @@
             gap: 0.5rem;
             margin-bottom: 2rem;
             flex-wrap: wrap;
-            background: var(--surface-dark);
+            background: var(--surface-card);
             padding: 0.75rem;
             border-radius: 12px;
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-color);
         }
 
         .filter-tab {
@@ -266,7 +335,7 @@
 
         .filter-tab:hover {
             color: #fff;
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--border-color);
         }
 
         .filter-tab.active {
@@ -278,9 +347,9 @@
 
         /* Custom Webkit Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 4px; border: 1px solid var(--border); }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 4px; border: 1px solid var(--border-color); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--brand-primary); }
 
         /* Floating Action Button (FAB) */
         .fab-btn {
@@ -290,7 +359,7 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background-color: var(--primary);
+            background-color: var(--brand-primary);
             color: #fff;
             border: none;
             display: flex;
@@ -321,8 +390,8 @@
         }
 
         .qa-modal-content {
-            background: var(--surface-dark);
-            border: 1px solid var(--border);
+            background: var(--surface-card);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 2rem;
             width: 90%;
@@ -360,84 +429,83 @@
             color: #fff;
         }
 
-        /* Progressive Disclosure CSS */
-        .card-header-toggle {
+        /* Interactive Card CSS */
+        a.interactive-card {
             display: flex;
+            flex-direction: column;
             justify-content: space-between;
-            align-items: flex-start;
-            cursor: pointer;
-            width: 100%;
-            user-select: none;
-        }
-        
-        .toggle-icon {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
-            color: var(--text-muted);
-            flex-shrink: 0;
-            margin-top: 0.2rem;
-        }
-
-        .subject-card.expanded .toggle-icon {
-            transform: rotate(180deg);
-            background: rgba(59, 130, 246, 0.15);
-            color: #60a5fa;
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-
-        .card-details-wrapper {
-            display: grid;
-            grid-template-rows: 0fr;
-            transition: grid-template-rows 0.4s ease-out;
-        }
-        
-        .subject-card.expanded .card-details-wrapper {
-            grid-template-rows: 1fr;
-        }
-
-        .card-details-inner {
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            position: relative;
             overflow: hidden;
-            min-height: 0;
         }
+        a.interactive-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(29, 78, 216, 0.15); /* var(--brand-primary) glow */
+            border-color: var(--brand-primary);
+        }
+        .card-header-flex { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+        .subject-info h3 { margin: 0 0 0.5rem 0; color: var(--text-primary); font-size: 1.3rem; font-weight: 700; }
+        .subject-code-badge { background: rgba(29, 78, 216, 0.2); color: #60a5fa; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600; display: inline-block; }
+        .student-count-badge { background: var(--surface-hover); color: var(--text-muted); padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
+        .card-hover-hint { margin-top: 1.5rem; color: var(--brand-primary); font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; opacity: 0.6; transition: opacity 0.3s ease, transform 0.3s ease; transform: translateX(10px); }
+        a.interactive-card:hover .card-hover-hint { opacity: 1; transform: translateX(0); }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Prevent FOUC
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+    </script>
+
 </head>
 <body>
+    {% if GLOBAL_ANNOUNCEMENT %}
+    <div style="background-color: #ef4444; color: white; padding: 15px; text-align: center; font-family: 'Cairo', sans-serif; font-weight: bold; font-size: 1.1rem; z-index: 9999; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <i class="fas fa-bullhorn" style="margin-left: 10px;"></i>
+        {{ GLOBAL_ANNOUNCEMENT.message }}
+    </div>
+    {% endif %}
     <nav class="navbar">
-        <div style="display: flex; align-items: center;">
-            <img src="{% static 'images/logo_nav.png' %}" alt="University Logo" class="nav-logo me-2">
-            <h1>منصة كلية التربية النوعية</h1>
-        </div>
-        <div class="user-greeting" style="display: flex; align-items: center; gap: 0.5rem;">
-            {% if request.user.profile_picture %}
-                <img src="{{ request.user.profile_picture.url }}" alt="Profile Picture" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
-            {% else %}
-                <svg viewBox="0 0 24 24" style="width: 36px; height: 36px; fill: var(--text-muted); background: rgba(255,255,255,0.05); border-radius: 50%; padding: 4px; border: 2px solid var(--border);">
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                </svg>
-            {% endif %}
-            <span style="margin-left: 1rem;">مرحباً، دكتور {{ user.last_name|default:user.username }}</span>
-            <a href="{% url 'doctor_settings' %}" class="logout-btn" style="border-color: rgba(59, 130, 246, 0.3); color: #93c5fd; margin-right: 0.5rem;" onmouseover="this.style.backgroundColor='rgba(59, 130, 246, 0.1)'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#93c5fd';">⚙️ الإعدادات</a>
+                        <a style="display: flex; align-items: center; gap: 15px; text-decoration: none;" href="
+    {% if request.user.is_authenticated %}
+        {% if request.user.role == 'STUDENT' %}
+            {% url 'student_dashboard' %}
+        {% elif request.user.role == 'DOCTOR' %}
+            {% url 'doctor_dashboard' %}
+        {% else %}
+            {% url 'login' %}
+        {% endif %}
+    {% else %}
+        {% url 'login' %}
+    {% endif %}
+">
+            <img src="{% static 'images/logo_nav.png' %}" alt="University Logo" style="height: 45px; width: 45px; object-fit: contain; background-color: white; border-radius: 50%; padding: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h1 style="font-family: 'Cairo', sans-serif !important; font-weight: 700; font-size: 1.3rem; color: var(--text-primary); margin: 0;">منصة كلية التربية النوعية</h1>
+        </a>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div class="user-greeting" style="display: flex; align-items: center; gap: 8px; color: var(--text-primary);">
+                {% if request.user.profile_picture %}
+                    <img src="{{ request.user.profile_picture.url }}" alt="Profile Picture" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--brand-primary);">
+                {% else %}
+                    <svg viewBox="0 0 24 24" style="width: 36px; height: 36px; fill: var(--text-muted); background: var(--border-color); border-radius: 50%; padding: 4px; border: 2px solid var(--border-color);">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                {% endif %}
+                <span>مرحباً، دكتور {{ user.last_name|default:user.username }}</span>
+            </div>
+            <a href="{% url 'doctor_settings' %}" class="logout-btn" style="border-color: rgba(59, 130, 246, 0.3); color: #93c5fd;" onmouseover="this.style.backgroundColor='rgba(59, 130, 246, 0.1)'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#93c5fd';">⚙️ الإعدادات</a>
             <a href="{% url 'logout' %}" class="logout-btn">تسجيل الخروج</a>
+            <button id="theme-toggle" type="button" class="btn" style="background: var(--surface-card); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; padding: 0;">🌓</button>
         </div>
     </nav>
 
     <div class="container">
-        {% if messages %}
-            <div style="margin-bottom: 2rem;">
-                {% for message in messages %}
-                    <div style="padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; {% if message.tags == 'error' %}background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171;{% elif message.tags == 'success' %}background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399;{% else %}background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa;{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+
 
         <div class="header-section">
             <h2>لوحة تحكم الدكتور</h2>
@@ -462,241 +530,19 @@
             <h3 class="subject-section-title" style="grid-column: 1 / -1; color: #fff; margin-bottom: -0.5rem;">المواد الأساسية</h3>
             {% if main_subjects %}
                 {% for subject in main_subjects %}
-                <div class="subject-card" data-year="{{ subject.academic_year }}">
-                    <div class="card-header-toggle" onclick="this.parentElement.classList.toggle('expanded')">
-                        <div>
-                            <span class="badge" style="margin-bottom: 0.5rem; display: inline-block;">{{ subject.code }}</span>
-                            <h3 style="margin: 0; font-size: 1.25rem; color: #fff;">{{ subject.name }}</h3>
+                <a href="{% url 'subject_detail' subject.id %}" class="subject-card interactive-card" data-year="{{ subject.academic_year }}">
+                    <div class="card-header-flex">
+                        <div class="subject-info">
+                            <h3>{{ subject.name }} {% if subject.code %}<span style="font-size: 0.8em; opacity: 0.8;">({{ subject.code }})</span>{% endif %}</h3>
                         </div>
-                        <div class="toggle-icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                                <path d="M7 10l5 5 5-5z"/>
-                            </svg>
+                        <div class="student-count-badge">
+                            👥 {{ subject.enrollments.count }} طالب
                         </div>
                     </div>
-                    
-                    <div class="card-details-wrapper">
-                        <div class="card-details-inner">
-                            <div style="padding-top: 1.5rem; margin-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
-
-                    <!-- Row 2: Schedule Info -->
-                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
-                        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between;">
-                            <span style="font-size: 0.9rem; color: #cbd5e1;">الموعد: <strong>{{ subject.get_lecture_day_display|default:"لم يحدد" }}</strong></span>
-                            <form action="{% url 'update_schedule' subject.id %}" method="POST" style="display: flex; gap: 0.5rem; align-items: center;">
-                                {% csrf_token %}
-                                <select name="day" style="padding: 0.4rem; border-radius: 6px; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); color: white; font-size: 0.85rem;">
-                                    {% for value, label in DAYS_OF_WEEK %}
-                                        <option value="{{ value }}" {% if subject.lecture_day == value %}selected{% endif %} style="color: black;">{{ label }}</option>
-                                    {% endfor %}
-                                </select>
-                                <button type="submit" class="badge secondary" style="cursor: pointer; border: 1px solid var(--border); font-size: 0.85rem; padding: 0.4rem 0.8rem;">تحديث اليوم</button>
-                            </form>
-                        </div>
+                    <div class="card-hover-hint">
+                        دخول للمادة ⬅️
                     </div>
-
-                    <!-- Row 3: Attendance Actions -->
-                    <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-bottom: 1.5rem;">
-                        <form action="{% url 'start_attendance_session' subject.id %}" method="POST" style="display: flex; align-items: center; gap: 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.5rem 1rem; border-radius: 8px;">
-                            {% csrf_token %}
-                            <input type="number" name="duration_minutes" value="5" min="1" max="60" required style="width: 50px; padding: 0.4rem; border-radius: 6px; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(16, 185, 129, 0.3); color: white; text-align: center;">
-                            <span style="font-size: 0.85rem; color: #34d399; margin-left: -0.25rem;">دقيقة</span>
-                            <button type="submit" class="action-btn" style="padding: 0.5rem 1rem; background-color: #10b981; color: white; border: none; cursor: pointer; font-weight: 500;">⏱️ بدء تسجيل الغياب بالرمز</button>
-                            <div style="width: 1px; height: 24px; background: rgba(16, 185, 129, 0.3);"></div>
-                            <label style="font-size: 0.85rem; color: #34d399; display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
-                                <input type="checkbox" name="is_makeup" style="accent-color: #10b981; width: 16px; height: 16px;">
-                                محاضرة تعويضية
-                            </label>
-                        </form>
-
-                        <a href="{% url 'export_attendance_csv' subject.id %}" class="btn-secondary" style="padding: 0.6rem 1rem; text-decoration: none; display: flex; align-items: center; gap: 0.4rem; border-radius: 8px;">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                            تصدير CSV
-                        </a>
-                    </div>
-
-                    {% for active in active_sessions %}
-                        {% if active.subject_id == subject.id and active.section_id is None %}
-                            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; height: auto; min-height: fit-content; padding: 1.5rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-start; flex-direction: row; gap: 0.5rem; flex-wrap: wrap;">
-                                <div>
-                                    <h4 style="margin: 0; color: #10b981; font-size: 0.9rem; white-space: normal; line-height: 1.5;">رمز الغياب النشط</h4>
-                                    <p style="margin: 0.25rem 0 0 0; color: #e2e8f0; font-size: 1.5rem; font-weight: bold; font-family: monospace; letter-spacing: 2px;">{{ active.session.pin_code }}</p>
-                                </div>
-                                <div style="text-align: right; display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end;">
-                                    <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">ينتهي في {{ active.expires_at|time:"h:i A" }}</span>
-                                    <form method="POST" action="{% url 'end_attendance_session' active.session.id %}">
-                                        {% csrf_token %}
-                                        <button type="submit" class="action-btn" style="padding: 0.3rem 0.6rem; background-color: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); color: #fca5a5; font-size: 0.75rem;">إنهاء الجلسة الآن</button>
-                                    </form>
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if subject.attendance_sessions.all %}
-                        <div style="margin-bottom: 1.5rem; background: rgba(30, 58, 138, 0.1); border: 1px solid rgba(30, 58, 138, 0.2); border-radius: 8px; padding: 1rem;">
-                            <h4 style="margin: 0 0 0.75rem 0; font-size: 0.95rem; color: #93c5fd; display: flex; align-items: center; gap: 0.5rem;">📊 سجل الغياب السابق</h4>
-                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                                {% for session in subject.attendance_sessions.all|slice:":5" %}
-                                    {% if not session.subject_section %}
-                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: rgba(0,0,0,0.2); border-radius: 6px;">
-                                            <span style="font-size: 0.85rem; color: #e2e8f0;">{{ session.created_at|date:"M d, Y - h:i A" }} {% if session.is_makeup_class %}<span style="color: #eab308; font-size: 0.7rem; margin-left: 0.5rem;">(تعويضية)</span>{% endif %}</span>
-                                            <div style="display: flex; gap: 0.5rem;">
-                                                <a href="{% url 'attendance_report_detail' session.id %}" class="badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; text-decoration: none; border: 1px solid rgba(59, 130, 246, 0.3);">عرض التقرير</a>
-                                                <a href="{% url 'edit_attendance' session.id %}" class="badge secondary" style="text-decoration: none; border-color: rgba(255,255,255,0.1);">تعديل</a>
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    <p class="subject-desc">{{ subject.description|default:"لا يوجد وصف متاح."|truncatechars:120 }}</p>
-                    
-                    <div class="official-book-section" style="margin: 1rem 0; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
-                        <h4 style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem; margin-top: 0; display: flex; align-items: center; gap: 0.5rem;">
-                            📚 الكتاب الرسمي للمادة
-                            {% if subject.official_book %}
-                                <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">تم رفع الكتاب</span>
-                            {% endif %}
-                        </h4>
-                        
-                        <form method="POST" action="{% url 'upload_official_book' subject.id %}" enctype="multipart/form-data" style="display: flex; flex-direction: row; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
-                            {% csrf_token %}
-                            <input type="file" name="official_book" required style="font-size: 0.8rem; color: #94a3b8; max-width: 250px;">
-                            <button type="submit" class="action-btn" style="padding: 0.3rem 0.8rem; background-color: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.5);">رفع/تحديث الكتاب</button>
-                        </form>
-                        {% if subject.official_book %}
-                            <a href="{{ subject.official_book.url }}" target="_blank" style="font-size: 0.8rem; color: #60a5fa; text-decoration: none;">عرض الكتاب الحالي</a>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="materials-section" style="margin: 1rem 0; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
-                        <h4 style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem; margin-top: 0;">وحدات ومحاضرات المادة</h4>
-                        {% if subject.materials.all %}
-                            <div style="margin-bottom: 1rem;">
-                                <h5 style="font-size: 0.8rem; color: #a78bfa; margin: 0 0 0.25rem 0;">الوحدات المرفوعة</h5>
-                                <ul style="list-style: none; padding: 0; margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #94a3b8;">
-                                    {% for material in subject.materials.all %}
-                                        {% if material.material_type == 'LECTURE' %}
-                                            <li style="margin-bottom: 0.25rem; display: flex; justify-content: space-between; align-items: center;">
-                                                <span>• {{ material.title }} ({{ material.created_at|date:"M d" }})</span>
-                                                <form action="{% url 'delete_material' material.id %}" method="POST" style="display:inline;">
-                                                    {% csrf_token %}
-                                                    <button type="submit" style="background: none; border: none; cursor: pointer; padding: 0;">
-                                                        <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: #ef4444;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                                                    </button>
-                                                </form>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        {% else %}
-                            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">لم يتم إضافة أي محاضرات بعد.</p>
-                        {% endif %}
-                        
-                        <h4 style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 0.5rem;">➕ إضافة محاضرة / وحدة</h4>
-                        <form method="POST" action="{% url 'upload_material' subject.id %}" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            {% csrf_token %}
-                            <input type="text" name="title" placeholder="عنوان المحاضرة" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                            <textarea name="description" placeholder="الوصف / ملاحظات المحاضرة (اختياري)" style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem; min-height: 60px; resize: vertical; font-family: inherit;"></textarea>
-                            <input type="url" name="video_url" placeholder="رابط فيديو (مثال: يوتيوب) (اختياري)" style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                            <label style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: -0.25rem;">رفع ملف/PDF (اختياري):</label>
-                            <input type="file" name="file" style="font-size: 0.8rem; color: #94a3b8;">
-                            <button type="submit" class="action-btn" style="align-self: flex-start; padding: 0.4rem 1rem; background-color: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.5);">إضافة المحاضرة</button>
-                        </form>
-                    </div>
-
-                    <div class="assignments-section" style="margin: 1rem 0; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
-                        <h4 style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem; margin-top: 0;">التكليفات</h4>
-                        {% if subject.assignments.all %}
-                            <div style="margin-bottom: 1rem;">
-                                <ul style="list-style: none; padding: 0; margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #94a3b8;">
-                                    {% for assignment in subject.assignments.all %}
-                                        {% if not assignment.subject_section %}
-                                            <li style="margin-bottom: 0.25rem; display: flex; justify-content: space-between; align-items: center;">
-                                                <span>• {{ assignment.title }} (ميعاد التسليم: {{ assignment.due_date|date:"M d" }})</span>
-                                                <div style="display: flex; gap: 0.5rem; align-items: center;">
-                                                    <a href="{% url 'view_submissions' assignment.id %}" class="action-btn" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; background-color: rgba(167, 139, 250, 0.2); border-color: rgba(167, 139, 250, 0.5); text-decoration: none; color: #a78bfa;">عرض التسليمات</a>
-                                                    <form method="POST" action="{% url 'delete_assignment' assignment.id %}" onsubmit="return confirm('هل أنت متأكد من حذف هذا التكليف؟ سيتم حذف جميع تسليمات الطلاب المرتبطة به نهائياً!');" style="margin: 0;">
-                                                        {% csrf_token %}
-                                                        <button type="submit" class="action-btn" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; background-color: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); color: #fca5a5; cursor: pointer;">🗑️ حذف التكليف</button>
-                                                    </form>
-                                                </div>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        {% else %}
-                            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">لم يتم إنشاء أي تكليفات بعد.</p>
-                        {% endif %}
-                        
-                        <form method="POST" action="{% url 'create_assignment' subject.id %}" style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            {% csrf_token %}
-                            <input type="text" name="title" placeholder="عنوان التكليف" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                            <input type="number" step="0.5" name="max_grade" placeholder="الدرجة القصوى (مثال: 100)" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                            <input type="datetime-local" name="due_date" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                            <textarea name="requirements_text" placeholder="التعليمات والمتطلبات (اختياري)..." style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem; min-height: 60px; resize: vertical; font-family: inherit;"></textarea>
-                            <div style="display: flex; gap: 0.5rem;">
-                                <input type="number" name="max_file_size_mb" placeholder="الحد الأقصى للملف (MB)" value="10" required style="flex: 1; padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                                <input type="text" name="allowed_extensions" placeholder="الصيغ المسموحة (مثال: pdf,zip,docx)" value="pdf,zip,docx,rar" required style="flex: 2; padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                            </div>
-                            <button type="submit" class="action-btn" style="align-self: flex-start; padding: 0.4rem 1rem; background-color: rgba(167, 139, 250, 0.2); border-color: rgba(167, 139, 250, 0.5); color: #a78bfa;">إنشاء التكليف</button>
-                        </form>
-                    </div>
-
-                    <div class="announcements-section" style="margin: 1rem 0; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
-                        <h4 style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem; margin-top: 0;">الإعلانات</h4>
-                        
-                        {% if subject.announcements.all %}
-                            <div style="margin-bottom: 1rem; width: 100%; overflow-x: hidden; box-sizing: border-box;">
-                                <ul style="list-style: none; padding: 0; margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #94a3b8; width: 100%; box-sizing: border-box;">
-                                    {% for announcement in subject.announcements.all %}
-                                        {% if not announcement.subject_section %}
-                                            <li style="margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.5); padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05); gap: 0.5rem; width: 100%; box-sizing: border-box;">
-                                                <div style="display: flex; flex-direction: column; flex: 1 1 auto; overflow: hidden;">
-                                                    <span style="color: #e2e8f0; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{{ announcement.title }}</span>
-                                                    <span style="font-size: 0.75rem; color: #cbd5e1;">نُشر في: {{ announcement.created_at|date:"M d, Y" }}</span>
-                                                </div>
-                                                <form action="{% url 'delete_announcement' announcement.id %}" method="POST" style="display:flex; flex: 0 0 auto; margin: 0;">
-                                                    {% csrf_token %}
-                                                    <button type="submit" style="background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'" onmouseout="this.style.background='none'">
-                                                        <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: #ef4444;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                                                    </button>
-                                                </form>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        {% endif %}
-
-                        <h4 style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 0.5rem;">نشر إعلان</h4>
-                        <form method="POST" action="{% url 'create_announcement' subject.id %}" style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            {% csrf_token %}
-                            <input type="text" name="title" placeholder="عنوان الإعلان" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                            <textarea name="content" placeholder="اكتب رسالتك للطلاب هنا..." required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem; min-height: 80px; resize: vertical; font-family: inherit;"></textarea>
-                            <label style="font-size: 0.8rem; color: #cbd5e1;">ينتهي في (اختياري):</label>
-                            <input type="datetime-local" name="expires_at" style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                            <button type="submit" class="action-btn" style="align-self: flex-start; padding: 0.4rem 1rem; background-color: rgba(234, 179, 8, 0.2); border-color: rgba(234, 179, 8, 0.5); color: #eab308;">نشر الإعلان</button>
-                        </form>
-                    </div>
-
-                    <div class="enrollment-count">
-                        <div>
-                            <svg viewBox="0 0 24 24">
-                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                            </svg>
-                            {{ subject.enrollments.count }} إجمالي الطلاب
-                        </div>
-                    </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </a>
                 {% endfor %}
             {% else %}
                 <div class="empty-state">
@@ -708,206 +554,20 @@
             <h3 class="subject-section-title" style="grid-column: 1 / -1; color: #fff; margin-top: 1rem; margin-bottom: -0.5rem;">السكاشن المسندة</h3>
             {% if assigned_sections %}
                 {% for section in assigned_sections %}
-                <div class="subject-card" data-year="{{ section.subject.academic_year }}">
-                    <div class="card-header-toggle" onclick="this.parentElement.classList.toggle('expanded')">
-                        <div>
-                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
-                                <span class="badge secondary">{{ section.subject.code }}</span>
-                                <span class="badge" style="background: rgba(236, 72, 153, 0.15); color: #f472b6; border-color: rgba(236, 72, 153, 0.3);">سكشن {{ section.section_group }}</span>
-                            </div>
-                            <h3 style="margin: 0; font-size: 1.25rem; color: #fff;">{{ section.subject.name }}</h3>
+                <a href="{% url 'section_detail' section.id %}" class="subject-card interactive-card" data-year="{{ section.subject.academic_year }}">
+                    <div class="card-header-flex">
+                        <div class="subject-info">
+                            <h3>{{ section.subject.name }} {% if section.subject.code %}<span style="font-size: 0.8em; opacity: 0.8;">({{ section.subject.code }})</span>{% endif %}</h3>
+                            <span style="display: inline-block; background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; margin-top: 0.5rem;">سكشن {{ section.section_group }}</span>
                         </div>
-                        <div class="toggle-icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                                <path d="M7 10l5 5 5-5z"/>
-                            </svg>
+                        <div class="student-count-badge">
+                            👥 {{ section.students.count }} طالب
                         </div>
                     </div>
-
-                    <div class="card-details-wrapper">
-                        <div class="card-details-inner">
-                            <div style="padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: 1rem;">
-
-                    <!-- Row 2: Schedule Info -->
-                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
-                        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between;">
-                            <span style="font-size: 0.9rem; color: #cbd5e1;">الموعد: <strong>{{ section.get_section_day_display|default:"لم يحدد" }}</strong></span>
-                            <form action="{% url 'update_schedule_section' section.subject.id section.id %}" method="POST" style="display: flex; gap: 0.5rem; align-items: center;">
-                                {% csrf_token %}
-                                <select name="day" style="padding: 0.4rem; border-radius: 6px; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); color: white; font-size: 0.85rem;">
-                                    {% for value, label in DAYS_OF_WEEK %}
-                                        <option value="{{ value }}" {% if section.section_day == value %}selected{% endif %} style="color: black;">{{ label }}</option>
-                                    {% endfor %}
-                                </select>
-                                <button type="submit" class="badge secondary" style="cursor: pointer; border: 1px solid var(--border); font-size: 0.85rem; padding: 0.4rem 0.8rem;">تحديث اليوم</button>
-                            </form>
-                        </div>
+                    <div class="card-hover-hint">
+                        دخول للسكشن ⬅️
                     </div>
-
-                    <!-- Row 3: Attendance Actions -->
-                    <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-bottom: 1.5rem;">
-                        <form action="{% url 'start_attendance_session_section' section.subject.id section.id %}" method="POST" style="display: flex; align-items: center; gap: 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.5rem 1rem; border-radius: 8px;">
-                            {% csrf_token %}
-                            <input type="number" name="duration_minutes" value="5" min="1" max="60" required style="width: 50px; padding: 0.4rem; border-radius: 6px; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(16, 185, 129, 0.3); color: white; text-align: center;">
-                            <span style="font-size: 0.85rem; color: #34d399; margin-left: -0.25rem; margin-right: -0.25rem;">دقيقة</span>
-                            <button type="submit" class="action-btn" style="padding: 0.5rem 1rem; background-color: #10b981; color: white; border: none; cursor: pointer; font-weight: 500;">⏱️ بدء تسجيل الغياب بالرمز</button>
-                            <div style="width: 1px; height: 24px; background: rgba(16, 185, 129, 0.3);"></div>
-                            <label style="font-size: 0.85rem; color: #34d399; display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
-                                <input type="checkbox" name="is_makeup" style="accent-color: #10b981; width: 16px; height: 16px;">
-                                محاضرة تعويضية
-                            </label>
-                        </form>
-
-                        <a href="{% url 'export_attendance_csv_section' section.subject.id section.id %}" class="btn-secondary" style="padding: 0.6rem 1rem; text-decoration: none; display: flex; align-items: center; gap: 0.4rem; border-radius: 8px;">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                            تصدير CSV
-                        </a>
-                    </div>
-
-                    {% for active in active_sessions %}
-                        {% if active.subject_id == section.subject.id and active.section_id == section.id %}
-                            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; height: auto; min-height: fit-content; padding: 1.5rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-start; flex-direction: row; gap: 0.5rem; flex-wrap: wrap;">
-                                <div>
-                                    <h4 style="margin: 0; color: #10b981; font-size: 0.9rem; white-space: normal; line-height: 1.5;">رمز السكشن النشط</h4>
-                                    <p style="margin: 0.25rem 0 0 0; color: #e2e8f0; font-size: 1.5rem; font-weight: bold; font-family: monospace; letter-spacing: 2px;">{{ active.session.pin_code }}</p>
-                                </div>
-                                <div style="text-align: right; display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end;">
-                                    <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">ينتهي في {{ active.expires_at|time:"h:i A" }}</span>
-                                    <form method="POST" action="{% url 'end_attendance_session' active.session.id %}">
-                                        {% csrf_token %}
-                                        <button type="submit" class="action-btn" style="padding: 0.3rem 0.6rem; background-color: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); color: #fca5a5; font-size: 0.75rem;">إنهاء الجلسة الآن</button>
-                                    </form>
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if section.section_attendance_sessions.all %}
-                        <div style="margin-bottom: 1.5rem; background: rgba(30, 58, 138, 0.1); border: 1px solid rgba(30, 58, 138, 0.2); border-radius: 8px; padding: 1rem;">
-                            <h4 style="margin: 0 0 0.75rem 0; font-size: 0.95rem; color: #93c5fd; display: flex; align-items: center; gap: 0.5rem;">📊 سجل الغياب السابق</h4>
-                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                                {% for session in section.section_attendance_sessions.all|slice:":5" %}
-                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: rgba(0,0,0,0.2); border-radius: 6px;">
-                                        <span style="font-size: 0.85rem; color: #e2e8f0;">{{ session.created_at|date:"M d, Y - h:i A" }} {% if session.is_makeup_class %}<span style="color: #eab308; font-size: 0.7rem; margin-left: 0.5rem;">(تعويضية)</span>{% endif %}</span>
-                                        <div style="display: flex; gap: 0.5rem;">
-                                            <a href="{% url 'attendance_report_detail' session.id %}" class="badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; text-decoration: none; border: 1px solid rgba(59, 130, 246, 0.3);">عرض التقرير</a>
-                                            <a href="{% url 'edit_attendance' session.id %}" class="badge secondary" style="text-decoration: none; border-color: rgba(255,255,255,0.1);">تعديل</a>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endif %}
-                    
-                    <div class="materials-section" style="margin: 1rem 0; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
-                        <h4 style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem; margin-top: 0;">مواد السكشن</h4>
-                        {% if section.materials.all %}
-                            <div style="margin-bottom: 1rem;">
-                                <ul style="list-style: none; padding: 0; margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #94a3b8;">
-                                    {% for material in section.materials.all %}
-                                        <li style="margin-bottom: 0.25rem; display: flex; justify-content: space-between; align-items: center;">
-                                            <span>• {{ material.title }} ({{ material.created_at|date:"M d" }})</span>
-                                            <form action="{% url 'delete_material' material.id %}" method="POST" style="display:inline;">
-                                                {% csrf_token %}
-                                                <button type="submit" style="background: none; border: none; cursor: pointer; padding: 0;">
-                                                    <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: #ef4444;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                                                </button>
-                                            </form>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        {% else %}
-                            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">لم يتم إضافة أي مواد للسكشن بعد.</p>
-                        {% endif %}
-                        
-                        <h4 style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 0.5rem;">➕ إضافة مادة للسكشن</h4>
-                        <form method="POST" action="{% url 'upload_material_section' section.id %}" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            {% csrf_token %}
-                            <input type="text" name="title" placeholder="عنوان المادة" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                            <textarea name="description" placeholder="الوصف / الملاحظات (اختياري)" style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem; min-height: 60px; resize: vertical; font-family: inherit;"></textarea>
-                            <input type="url" name="video_url" placeholder="رابط فيديو (مثال: يوتيوب) (اختياري)" style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                            <label style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: -0.25rem;">رفع ملف/PDF (اختياري):</label>
-                            <input type="file" name="file" style="font-size: 0.8rem; color: #94a3b8;">
-                            <button type="submit" class="action-btn" style="align-self: flex-start; padding: 0.4rem 1rem; background-color: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.5);">إضافة للسكشن</button>
-                        </form>
-                    </div>
-
-                    <div class="assignments-section" style="margin: 1rem 0; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
-                        <h4 style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem; margin-top: 0;">تكليفات السكشن</h4>
-                        {% if section.assignments.all %}
-                            <div style="margin-bottom: 1rem;">
-                                <ul style="list-style: none; padding: 0; margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #94a3b8;">
-                                    {% for assignment in section.assignments.all %}
-                                        <li style="margin-bottom: 0.25rem; display: flex; justify-content: space-between; align-items: center;">
-                                            <span>• {{ assignment.title }} (ميعاد التسليم: {{ assignment.due_date|date:"M d" }})</span>
-                                            <div style="display: flex; gap: 0.5rem; align-items: center;">
-                                                <a href="{% url 'view_submissions' assignment.id %}" class="action-btn" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; background-color: rgba(167, 139, 250, 0.2); border-color: rgba(167, 139, 250, 0.5); text-decoration: none; color: #a78bfa;">عرض التسليمات</a>
-                                                <form method="POST" action="{% url 'delete_assignment' assignment.id %}" onsubmit="return confirm('هل أنت متأكد من حذف هذا التكليف؟ سيتم حذف جميع تسليمات الطلاب المرتبطة به نهائياً!');" style="margin: 0;">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="action-btn" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; background-color: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); color: #fca5a5; cursor: pointer;">🗑️ حذف التكليف</button>
-                                                </form>
-                                            </div>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        {% else %}
-                            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">لم يتم إنشاء أي تكليفات بعد.</p>
-                        {% endif %}
-                        
-                        <form method="POST" action="{% url 'create_assignment_section' section.id %}" style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            {% csrf_token %}
-                            <input type="text" name="title" placeholder="عنوان التكليف" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                            <input type="number" step="0.5" name="max_grade" placeholder="الدرجة القصوى (مثال: 100)" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                            <input type="datetime-local" name="due_date" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                            <textarea name="requirements_text" placeholder="التعليمات والمتطلبات (اختياري)..." style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem; min-height: 60px; resize: vertical; font-family: inherit;"></textarea>
-                            <div style="display: flex; gap: 0.5rem;">
-                                <input type="number" name="max_file_size_mb" placeholder="الحد الأقصى للملف (MB)" value="10" required style="flex: 1; padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                                <input type="text" name="allowed_extensions" placeholder="الصيغ المسموحة (مثال: pdf,zip,docx)" value="pdf,zip,docx,rar" required style="flex: 2; padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                            </div>
-                            <button type="submit" class="action-btn" style="align-self: flex-start; padding: 0.4rem 1rem; background-color: rgba(167, 139, 250, 0.2); border-color: rgba(167, 139, 250, 0.5); color: #a78bfa;">إنشاء التكليف</button>
-                        </form>
-                    </div>
-
-                    <div class="announcements-section" style="margin: 1rem 0; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
-                        <h4 style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem; margin-top: 0;">إعلانات السكشن</h4>
-                        
-                        {% if section.section_announcements.all %}
-                            <div style="margin-bottom: 1rem; width: 100%; overflow-x: hidden; box-sizing: border-box;">
-                                <ul style="list-style: none; padding: 0; margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #94a3b8; width: 100%; box-sizing: border-box;">
-                                    {% for announcement in section.section_announcements.all %}
-                                        <li style="margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.5); padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05); gap: 0.5rem; width: 100%; box-sizing: border-box;">
-                                            <div style="display: flex; flex-direction: column; flex: 1 1 auto; overflow: hidden;">
-                                                <span style="color: #e2e8f0; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{{ announcement.title }}</span>
-                                                <span style="font-size: 0.75rem; color: #cbd5e1;">نُشر في: {{ announcement.created_at|date:"M d, Y" }}</span>
-                                            </div>
-                                            <form action="{% url 'delete_announcement' announcement.id %}" method="POST" style="display:flex; flex: 0 0 auto; margin: 0;">
-                                                {% csrf_token %}
-                                                <button type="submit" style="background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'" onmouseout="this.style.background='none'">
-                                                    <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: #ef4444;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                                                </button>
-                                            </form>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        {% endif %}
-
-                        <h4 style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 0.5rem;">نشر إعلان للسكشن</h4>
-                        <form method="POST" action="{% url 'create_announcement_section' section.id %}" style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            {% csrf_token %}
-                            <input type="text" name="title" placeholder="عنوان الإعلان" required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                            <textarea name="content" placeholder="اكتب رسالتك لطلاب السكشن هنا..." required style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem; min-height: 80px; resize: vertical; font-family: inherit;"></textarea>
-                            <label style="font-size: 0.8rem; color: #cbd5e1;">ينتهي في (اختياري):</label>
-                            <input type="datetime-local" name="expires_at" style="padding: 0.5rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 0.85rem;">
-                            <button type="submit" class="action-btn" style="align-self: flex-start; padding: 0.4rem 1rem; background-color: rgba(234, 179, 8, 0.2); border-color: rgba(234, 179, 8, 0.5); color: #eab308;">نشر للسكشن</button>
-                        </form>
-                    </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </a>
                 {% endfor %}
             {% else %}
                 <div class="empty-state">
@@ -932,55 +592,37 @@
                 <h3>⚡ إجراء سريع</h3>
                 <button class="qa-close-btn" id="qaCloseBtn">&times;</button>
             </div>
-            <form id="qaForm" method="POST">
+            <form id="qaForm" method="POST" action="{% url 'bulk_create_announcement' %}">
                 {% csrf_token %}
                 <div style="margin-bottom: 1rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-size: 0.9rem;">نوع الإجراء:</label>
-                    <select id="qaActionType" style="width: 100%; padding: 0.6rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 8px; color: white; font-size: 0.9rem;">
-                        <option value="attendance">بدء جلسة غياب</option>
-                        <option value="announcement">إرسال إعلان</option>
-                    </select>
-                </div>
-                
-                <div style="margin-bottom: 1rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-size: 0.9rem;">المادة أو السكشن:</label>
-                    <select id="qaSubject" style="width: 100%; padding: 0.6rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 8px; color: white; font-size: 0.9rem;" required>
-                        <option value="" disabled selected>-- اختر المادة أو السكشن --</option>
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">إرسال إلى (يمكنك اختيار أكثر من جهة):</label>
+                    <select name="targets" id="qaSubject" style="width: 100%; padding: 0.6rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border-color); border-radius: 8px; color: white; font-size: 0.9rem; min-height: 120px;" multiple required>
                         {% if main_subjects %}
                         <optgroup label="المواد الأساسية">
                             {% for subject in main_subjects %}
-                            <option value="subject-{{ subject.id }}" data-subject-id="{{ subject.id }}">مادة: {{ subject.name }}</option>
+                            <option value="subject_{{ subject.id }}">مادة: {{ subject.name }}</option>
                             {% endfor %}
                         </optgroup>
                         {% endif %}
                         {% if assigned_sections %}
                         <optgroup label="السكاشن المسندة">
                             {% for section in assigned_sections %}
-                            <option value="section-{{ section.id }}" data-section-id="{{ section.id }}" data-subject-id="{{ section.subject.id }}">سكشن: {{ section.subject.name }} - سكشن {{ section.section_group }}</option>
+                            <option value="section_{{ section.id }}">سكشن: {{ section.subject.name }} - سكشن {{ section.section_group }}</option>
                             {% endfor %}
                         </optgroup>
                         {% endif %}
                     </select>
+                    <small style="color: #64748b; font-size: 0.75rem;">اضغط Ctrl (أو Cmd) لاختيار أكثر من عنصر</small>
                 </div>
 
-                <div id="qaAttendanceFields" style="display: block; margin-bottom: 1rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-size: 0.9rem;">المدة (بالدقائق):</label>
-                    <input type="number" name="duration_minutes" value="5" min="1" max="60" style="width: 100%; padding: 0.6rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 8px; color: white;">
-                    <label style="margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem; color: #cbd5e1; cursor: pointer; font-size: 0.9rem;">
-                        <input type="checkbox" name="is_makeup" style="accent-color: #10b981; width: 16px; height: 16px;"> محاضرة تعويضية
-                    </label>
+                <div id="qaAnnouncementFields" style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">عنوان الإعلان:</label>
+                    <input type="text" name="title" id="qaTitle" required style="width: 100%; padding: 0.6rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border-color); border-radius: 8px; color: white; margin-bottom: 1rem;" placeholder="أدخل عنوان الإعلان...">
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">المحتوى:</label>
+                    <textarea name="content" id="qaContent" required rows="4" style="width: 100%; padding: 0.6rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border-color); border-radius: 8px; color: white; resize: vertical; margin-bottom: 1rem;" placeholder="اكتب محتوى الإعلان هنا..."></textarea>
                 </div>
 
-                <div id="qaAnnouncementFields" style="display: none; margin-bottom: 1rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-size: 0.9rem;">عنوان الإعلان:</label>
-                    <input type="text" name="title" id="qaTitle" style="width: 100%; padding: 0.6rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 8px; color: white; margin-bottom: 1rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-size: 0.9rem;">المحتوى:</label>
-                    <textarea name="content" id="qaContent" style="width: 100%; padding: 0.6rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 8px; color: white; min-height: 80px; resize: vertical; margin-bottom: 1rem;"></textarea>
-                    <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-size: 0.9rem;">ينتهي في (اختياري):</label>
-                    <input type="datetime-local" name="expires_at" style="width: 100%; padding: 0.6rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 8px; color: white;">
-                </div>
-
-                <button type="submit" class="action-btn" style="width: 100%; padding: 0.8rem; background-color: var(--primary); border-color: var(--primary); font-size: 1rem; font-weight: bold; margin-top: 0.5rem;">تأكيد الإجراء</button>
+                <button type="submit" class="action-btn" style="width: 100%; padding: 0.8rem; background-color: var(--brand-primary); border-color: var(--brand-primary); font-size: 1rem; font-weight: bold; margin-top: 0.5rem;">إرسال الإعلان</button>
             </form>
         </div>
     </div>
@@ -1027,9 +669,6 @@
             const fabBtn = document.getElementById('fabBtn');
             const qaModal = document.getElementById('qaModal');
             const qaCloseBtn = document.getElementById('qaCloseBtn');
-            const qaActionType = document.getElementById('qaActionType');
-            const qaAttendanceFields = document.getElementById('qaAttendanceFields');
-            const qaAnnouncementFields = document.getElementById('qaAnnouncementFields');
             const qaForm = document.getElementById('qaForm');
             const qaSubject = document.getElementById('qaSubject');
             const qaTitle = document.getElementById('qaTitle');
@@ -1050,57 +689,131 @@
                     }
                 });
 
-                qaActionType.addEventListener('change', (e) => {
-                    if (e.target.value === 'attendance') {
-                        qaAttendanceFields.style.display = 'block';
-                        qaAnnouncementFields.style.display = 'none';
-                        qaTitle.required = false;
-                        qaContent.required = false;
-                    } else {
-                        qaAttendanceFields.style.display = 'none';
-                        qaAnnouncementFields.style.display = 'block';
-                        qaTitle.required = true;
-                        qaContent.required = true;
-                    }
-                });
-
-                qaForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    
-                    const action = qaActionType.value;
-                    if (!qaSubject.value) {
-                        alert('يرجى اختيار مادة أو سكشن');
-                        return;
-                    }
-
-                    const selectedOption = qaSubject.options[qaSubject.selectedIndex];
-                    const val = selectedOption.value; // "subject-X" or "section-Y"
-                    const subjectId = selectedOption.getAttribute('data-subject-id');
-                    const sectionId = selectedOption.getAttribute('data-section-id');
-
-                    let url = '';
-                    
-                    if (action === 'attendance') {
-                        if (val.startsWith('subject-')) {
-                            url = `/doctor/attendance/start/${subjectId}/`;
-                        } else if (val.startsWith('section-')) {
-                            url = `/doctor/attendance/start/${subjectId}/section/${sectionId}/`;
-                        }
-                    } else if (action === 'announcement') {
-                        if (val.startsWith('subject-')) {
-                            url = `/doctor/announcement/create/${subjectId}/`;
-                        } else if (val.startsWith('section-')) {
-                            url = `/doctor/announcement/create/section/${sectionId}/`;
-                        }
-                    }
-                    
-                    if (url) {
-                        qaForm.action = url;
-                        qaForm.submit();
-                    }
-                });
             }
         });
     </script>
+
+    <style>
+.golden-swal-popup {
+    border: 2px solid #fbbf24 !important; /* Golden border */
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.2) !important; /* Golden glow */
+    border-radius: 16px !important;
+    background: var(--surface-dark, #1e293b) !important;
+    width: auto !important;
+    max-width: 90% !important;
+    padding: 2em !important;
+}
+.golden-swal-title {
+    font-family: 'Cairo', sans-serif !important;
+    font-size: 1.3rem !important;
+    line-height: 1.6 !important;
+    color: var(--text-primary) !important;
+    word-wrap: break-word !important;
+    white-space: pre-wrap !important;
+}
+
+        /* --- GLOBAL CONTRAST PATCH --- */
+        /* Force all typography to respect the dynamic theme variables */
+        body, h1, h2, h3, h4, h5, h6, p, span:not(.badge), div, a, li, td, th, label {
+            color: var(--text-primary) !important;
+        }
+
+        /* Override old utility classes */
+        .text-white, .text-light {
+            color: var(--text-primary) !important;
+        }
+        .text-muted, .help-text {
+            color: var(--text-muted) !important;
+        }
+
+        /* Fix Form Inputs for Light/Dark Mode */
+        input:not([type="submit"]):not([type="button"]), textarea, select {
+            background-color: var(--surface-card) !important;
+            color: var(--text-primary) !important;
+            border: 1px solid var(--border-color) !important;
+        }
+        input::placeholder, textarea::placeholder {
+            color: var(--text-muted) !important;
+        }
+
+        /* Protect specific elements that MUST remain white/colored */
+        .btn-primary, .btn-danger, .btn-warning, .btn-success {
+            color: #ffffff !important;
+        }
+        .btn-primary *, .btn-danger *, .btn-warning *, .btn-success * {
+            color: #ffffff !important;
+        }
+
+        /* Fix Tagify Dropdown Contrast */
+        .tagify__dropdown__item {
+            color: var(--text-primary) !important;
+        }
+        .tagify__dropdown__item:hover {
+            color: var(--brand-hover) !important;
+        }
+</style>
+<script>
+{% if messages %}
+    const Toast = Swal.mixin({
+        position: 'center',
+        toast: false,
+        backdrop: 'rgba(0, 0, 0, 0.7)',
+        showConfirmButton: true,
+        confirmButtonText: 'حسناً',
+        confirmButtonColor: '#fbbf24', /* Golden button */
+        timer: 5000,
+        timerProgressBar: true,
+        background: 'var(--surface-dark, #1e293b)',
+        iconColor: '#fbbf24', /* Golden icon */
+        customClass: {
+            popup: 'golden-swal-popup',
+            title: 'golden-swal-title'
+        }
+    });
+    
+    {% for message in messages %}
+        let iconType = 'success';
+        let tag = '{{ message.tags }}';
+        if (tag.includes('error')) iconType = 'error';
+        if (tag.includes('warning')) iconType = 'warning';
+        if (tag.includes('info')) iconType = 'info';
+
+        Toast.fire({
+            icon: iconType,
+            title: '{{ message|escapejs }}'
+        });
+    {% endfor %}
+{% endif %}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const themeToggle = document.getElementById('theme-toggle');
+    const currentTheme = localStorage.getItem('theme');
+
+    // Apply saved theme on load (Fallback if head script missed)
+    if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        if (themeToggle) updateToggleIcon(currentTheme);
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            let switchToTheme = theme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', switchToTheme);
+            localStorage.setItem('theme', switchToTheme);
+            updateToggleIcon(switchToTheme);
+        });
+    }
+
+    function updateToggleIcon(theme) {
+        // Change icon based on mode
+        themeToggle.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+    }
+});
+</script>
+
 </body>
 </html>

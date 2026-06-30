@@ -1,0 +1,133 @@
+{% extends "admin/login.html" %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* Force CSS Priority and Target Jazzmin DOM */
+    body.login-page {
+        background-color: #1e293b !important;
+        background-image: none !important;
+        font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        height: 100vh !important;
+        margin: 0 !important;
+    }
+    
+    /* Hide Jazzmin's default logo text/image completely */
+    .login-logo {
+        display: none !important;
+    }
+
+    /* Clean Center-Card Layout */
+    .login-box {
+        width: 100% !important;
+        max-width: 400px !important;
+        margin: 0 !important;
+        padding: 0 15px !important;
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.05) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .login-card-body {
+        background: transparent !important;
+        padding: 40px !important;
+    }
+
+    /* Refine Typography */
+    .login-box-msg {
+        color: #fff !important;
+        font-size: 1.5rem !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.5px !important;
+        font-family: 'Cairo', sans-serif !important;
+        padding: 0 !important;
+        margin-bottom: 30px !important;
+        text-align: center !important;
+    }
+
+    /* Form Field Spacing & Styling */
+    .input-group {
+        margin-bottom: 20px !important;
+    }
+
+    .input-group .form-control {
+        width: 100% !important;
+        background: rgba(0, 0, 0, 0.2) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        color: white !important;
+        padding: 12px 15px !important;
+        border-radius: 8px !important;
+        height: auto !important;
+        box-sizing: border-box !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .input-group .form-control:focus {
+        border-color: #60a5fa !important;
+        outline: none !important;
+        background: rgba(255, 255, 255, 0.15) !important;
+        box-shadow: none !important;
+    }
+    
+    /* Hide the icons inside the input group to keep it strictly minimalist */
+    .input-group-text {
+        display: none !important;
+    }
+    
+    .input-group:not(.has-validation)>:not(:last-child):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating) {
+        border-top-right-radius: 8px !important;
+        border-bottom-right-radius: 8px !important;
+    }
+
+    /* Submit Button Refinement */
+    .btn.btn-primary {
+        width: 100% !important;
+        padding: 12px !important;
+        background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+        border: none !important;
+        border-radius: 8px !important;
+        color: white !important;
+        font-weight: bold !important;
+        font-size: 1rem !important;
+        cursor: pointer !important;
+        transition: transform 0.2s ease, filter 0.2s ease !important;
+        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2) !important;
+    }
+
+    .btn.btn-primary:hover {
+        filter: brightness(1.1) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    .errornote, .callout-danger {
+        background: rgba(239, 68, 68, 0.1) !important;
+        border: 1px solid rgba(239, 68, 68, 0.3) !important;
+        color: #fca5a5 !important;
+        border-radius: 6px !important;
+        padding: 10px !important;
+        font-size: 0.9rem !important;
+        margin-bottom: 20px !important;
+        text-align: center !important;
+    }
+    
+    /* Hide forgot password link for minimalist look */
+    .mb-3.text-center a {
+        color: rgba(255, 255, 255, 0.5) !important;
+        text-decoration: none !important;
+        font-size: 0.85rem !important;
+        transition: color 0.3s ease !important;
+    }
+    .mb-3.text-center a:hover {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+</style>
+{% endblock %}

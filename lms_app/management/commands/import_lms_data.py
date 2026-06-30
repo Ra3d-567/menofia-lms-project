@@ -1,7 +1,9 @@
 import csv
+
 from django.core.management.base import BaseCommand
-from django.contrib.auth.hashers import make_password
-from lms_app.models import User, Subject, Enrollment
+
+from lms_app.models import Enrollment, Subject, User
+
 
 class Command(BaseCommand):
     help = 'Bulk import Users, Subjects, and Enrollments from CSV files.'

@@ -1,24 +1,92 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إعدادات الدكتور - منصة كلية التربية النوعية - جامعة المنوفية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=Inter:wght@500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --secondary: #1e293b;
-            --background: #0f172a;
-            --surface: rgba(30, 41, 59, 0.7);
-            --surface-hover: rgba(30, 41, 59, 0.9);
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: rgba(255, 255, 255, 0.1);
-            --success: #10b981;
-            --danger: #ef4444;
+
+        /* Default Body Font (Comfortable Reading) */
+        body, p, span, div, textarea, select {
+            font-family: 'Tajawal', sans-serif !important;
         }
+
+        /* Headings (Strong and Formal) */
+        h1, h2, h3, h4, h5, h6, .subject-info h3 {
+            font-family: 'Cairo', sans-serif !important;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* Numbers, Codes, and UI Elements (Modern and Sharp) */
+        .subject-code-badge, .student-count-badge, .badge, .countdown-timer, .pin-code-display, input, button, a.action-btn {
+            font-family: 'Inter', 'Tajawal', sans-serif !important;
+        }
+
+        /* Form Inputs Override */
+        input[type="text"], input[type="password"], input[type="email"], input[type="number"] {
+            font-family: 'Inter', 'Tajawal', sans-serif !important;
+        }
+
+        
+        /* LIGHT MODE (Default) */
+        :root {
+            --bg-main: #f1f5f9;       /* Slate 100 - Soft off-white */
+            --surface-card: #ffffff;  /* Pure white cards */
+            --text-primary: #0f172a;  /* Slate 900 - Deep dark blue */
+            --text-muted: #64748b;    /* Slate 500 */
+            --brand-primary: #4f46e5; /* Indigo 600 */
+            --brand-hover: #4338ca;   /* Indigo 700 */
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-hover: 0 20px 25px -5px rgba(79, 70, 229, 0.15); /* Brand tinted shadow */
+            --transition-speed: 0.3s;
+        }
+
+        /* DARK MODE */
+        [data-theme="dark"] {
+            --bg-main: #0f172a;       /* Slate 900 */
+            --surface-card: #1e293b;  /* Slate 800 */
+            --text-primary: #f8fafc;  /* Slate 50 */
+            --text-muted: #94a3b8;    /* Slate 400 */
+            --brand-primary: #3b82f6; /* Blue 500 */
+            --brand-hover: #60a5fa;   /* Blue 400 */
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.3);
+            --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.5);
+            --shadow-hover: 0 20px 25px -5px rgba(59, 130, 246, 0.25);
+        }
+
+        /* GLOBAL STYLES */
+        body {
+            background-color: var(--bg-main) !important;
+            color: var(--text-primary) !important;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
+        /* MODERN CARD STYLING */
+        .interactive-card, .subject-card, .panel-card, .stats-card {
+            background-color: var(--surface-card) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 16px !important;
+            box-shadow: var(--shadow-md) !important;
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease, border-color var(--transition-speed) ease !important;
+        }
+        .interactive-card:hover, .subject-card:hover, a.interactive-card:hover {
+            transform: translateY(-5px) !important;
+            box-shadow: var(--shadow-hover) !important;
+            border-color: var(--brand-primary) !important;
+        }
+
+        /* BUTTONS & BADGES */
+        .btn-primary { background-color: var(--brand-primary) !important; color: white !important; border: none; border-radius: 8px; transition: all 0.2s ease; }
+        .btn-primary:hover { background-color: var(--brand-hover) !important; transform: scale(1.02); }
+        .badge { background-color: rgba(79, 70, 229, 0.1); color: var(--brand-primary); }
+        [data-theme="dark"] .badge { background-color: rgba(59, 130, 246, 0.15); }
+
 
         body {
             font-family: 'Inter', sans-serif;
@@ -36,7 +104,7 @@
         .navbar {
             background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--border-color);
             padding: 1rem 2rem;
             position: sticky;
             top: 0;
@@ -86,7 +154,7 @@
         .btn-outline {
             background: transparent;
             color: var(--text);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-color);
             padding: 0.5rem 1rem;
             border-radius: 8px;
             text-decoration: none;
@@ -112,7 +180,7 @@
         .glass-panel {
             background: var(--surface);
             backdrop-filter: blur(16px);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 2.5rem;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -155,7 +223,7 @@
             width: 100%;
             padding: 0.75rem 1rem;
             background-color: rgba(15, 23, 42, 0.5);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             color: var(--text);
             font-family: inherit;
@@ -166,7 +234,7 @@
 
         .form-control:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: var(--brand-primary);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
         }
 
@@ -186,7 +254,7 @@
         }
 
         .btn-submit {
-            background: var(--primary);
+            background: var(--brand-primary);
             color: white;
             border: none;
             padding: 0.875rem 1.5rem;
@@ -200,45 +268,57 @@
         }
 
         .btn-submit:hover {
-            background: var(--primary-hover);
+            background: var(--brand-hover);
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Prevent FOUC
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+    </script>
+
 </head>
 <body>
 
     <nav class="navbar">
         <div class="navbar-content">
-            <a href="{% url 'doctor_dashboard' %}" class="navbar-brand">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="var(--primary)"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72l5 2.73 5-2.73v3.72z"/></svg>
-                منصة كلية التربية النوعية - جامعة المنوفية
-            </a>
+        <a style="display: flex; align-items: center; gap: 15px; text-decoration: none;" href="
+    {% if request.user.is_authenticated %}
+        {% if request.user.role == 'STUDENT' %}
+            {% url 'student_dashboard' %}
+        {% elif request.user.role == 'DOCTOR' %}
+            {% url 'doctor_dashboard' %}
+        {% else %}
+            {% url 'login' %}
+        {% endif %}
+    {% else %}
+        {% url 'login' %}
+    {% endif %}
+">
+            <img src="{% static 'images/logo_nav.png' %}" alt="University Logo" style="height: 45px; width: 45px; object-fit: contain; background-color: white; border-radius: 50%; padding: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h1 style="font-family: 'Cairo', sans-serif !important; font-weight: 700; font-size: 1.3rem; color: var(--text-primary); margin: 0;">منصة كلية التربية النوعية</h1>
+        </a>
             
-            <div class="user-menu">
-                <a href="{% url 'doctor_dashboard' %}" class="btn-outline">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-                    العودة للوحة التحكم
-                </a>
-                <div class="user-info">
-                    <span class="user-name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
-                    <span class="user-role">عضو هيئة تدريس</span>
-                </div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="display: flex; align-items: center; gap: 8px; color: var(--text-primary);">
+                <span class="user-name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
+                <span class="user-role" style="color: var(--text-muted); font-size: 0.85rem;">عضو هيئة تدريس</span>
             </div>
+            <a href="{% url 'doctor_dashboard' %}" class="btn-outline" style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); color: var(--text-primary);">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align: middle; margin-left: 0.25rem;"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                العودة للوحة التحكم
+            </a>
+            <button id="theme-toggle" type="button" class="btn" style="background: var(--surface-card); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; padding: 0;">🌓</button>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <div class="container">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
-                    {% if message.tags == 'success' %}
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                    {% else %}
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                    {% endif %}
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
+
 
         <div class="glass-panel" style="margin-bottom: 2rem;">
             <h1 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.5rem;">إعدادات الملف الشخصي</h1>
@@ -300,5 +380,128 @@
             });
         });
     </script>
+
+    <style>
+.golden-swal-popup {
+    border: 2px solid #fbbf24 !important; /* Golden border */
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.2) !important; /* Golden glow */
+    border-radius: 16px !important;
+    background: var(--surface-dark, #1e293b) !important;
+    width: auto !important;
+    max-width: 90% !important;
+    padding: 2em !important;
+}
+.golden-swal-title {
+    font-family: 'Cairo', sans-serif !important;
+    font-size: 1.3rem !important;
+    line-height: 1.6 !important;
+    color: var(--text-primary) !important;
+    word-wrap: break-word !important;
+    white-space: pre-wrap !important;
+}
+
+        /* --- GLOBAL CONTRAST PATCH --- */
+        /* Force all typography to respect the dynamic theme variables */
+        body, h1, h2, h3, h4, h5, h6, p, span:not(.badge), div, a, li, td, th, label {
+            color: var(--text-primary) !important;
+        }
+
+        /* Override old utility classes */
+        .text-white, .text-light {
+            color: var(--text-primary) !important;
+        }
+        .text-muted, .help-text {
+            color: var(--text-muted) !important;
+        }
+
+        /* Fix Form Inputs for Light/Dark Mode */
+        input:not([type="submit"]):not([type="button"]), textarea, select {
+            background-color: var(--surface-card) !important;
+            color: var(--text-primary) !important;
+            border: 1px solid var(--border-color) !important;
+        }
+        input::placeholder, textarea::placeholder {
+            color: var(--text-muted) !important;
+        }
+
+        /* Protect specific elements that MUST remain white/colored */
+        .btn-primary, .btn-danger, .btn-warning, .btn-success {
+            color: #ffffff !important;
+        }
+        .btn-primary *, .btn-danger *, .btn-warning *, .btn-success * {
+            color: #ffffff !important;
+        }
+
+        /* Fix Tagify Dropdown Contrast */
+        .tagify__dropdown__item {
+            color: var(--text-primary) !important;
+        }
+        .tagify__dropdown__item:hover {
+            color: var(--brand-hover) !important;
+        }
+</style>
+<script>
+{% if messages %}
+    const Toast = Swal.mixin({
+        position: 'center',
+        toast: false,
+        backdrop: 'rgba(0, 0, 0, 0.7)',
+        showConfirmButton: true,
+        confirmButtonText: 'حسناً',
+        confirmButtonColor: '#fbbf24', /* Golden button */
+        timer: 5000,
+        timerProgressBar: true,
+        background: 'var(--surface-dark, #1e293b)',
+        iconColor: '#fbbf24', /* Golden icon */
+        customClass: {
+            popup: 'golden-swal-popup',
+            title: 'golden-swal-title'
+        }
+    });
+    
+    {% for message in messages %}
+        let iconType = 'success';
+        let tag = '{{ message.tags }}';
+        if (tag.includes('error')) iconType = 'error';
+        if (tag.includes('warning')) iconType = 'warning';
+        if (tag.includes('info')) iconType = 'info';
+
+        Toast.fire({
+            icon: iconType,
+            title: '{{ message|escapejs }}'
+        });
+    {% endfor %}
+{% endif %}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const themeToggle = document.getElementById('theme-toggle');
+    const currentTheme = localStorage.getItem('theme');
+
+    // Apply saved theme on load (Fallback if head script missed)
+    if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        if (themeToggle) updateToggleIcon(currentTheme);
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            let switchToTheme = theme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', switchToTheme);
+            localStorage.setItem('theme', switchToTheme);
+            updateToggleIcon(switchToTheme);
+        });
+    }
+
+    function updateToggleIcon(theme) {
+        // Change icon based on mode
+        themeToggle.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+    }
+});
+</script>
+
 </body>
 </html>

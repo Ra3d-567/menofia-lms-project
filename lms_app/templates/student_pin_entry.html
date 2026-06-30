@@ -1,0 +1,354 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الحضور - {{ session.subject.name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=Inter:wght@600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        
+        /* LIGHT MODE (Default) */
+        :root {
+            --bg-main: #f1f5f9;       /* Slate 100 - Soft off-white */
+            --surface-card: #ffffff;  /* Pure white cards */
+            --text-primary: #0f172a;  /* Slate 900 - Deep dark blue */
+            --text-muted: #64748b;    /* Slate 500 */
+            --brand-primary: #4f46e5; /* Indigo 600 */
+            --brand-hover: #4338ca;   /* Indigo 700 */
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-hover: 0 20px 25px -5px rgba(79, 70, 229, 0.15); /* Brand tinted shadow */
+            --transition-speed: 0.3s;
+        }
+
+        /* DARK MODE */
+        [data-theme="dark"] {
+            --bg-main: #0f172a;       /* Slate 900 */
+            --surface-card: #1e293b;  /* Slate 800 */
+            --text-primary: #f8fafc;  /* Slate 50 */
+            --text-muted: #94a3b8;    /* Slate 400 */
+            --brand-primary: #3b82f6; /* Blue 500 */
+            --brand-hover: #60a5fa;   /* Blue 400 */
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.3);
+            --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.5);
+            --shadow-hover: 0 20px 25px -5px rgba(59, 130, 246, 0.25);
+        }
+
+        /* GLOBAL STYLES */
+        body {
+            background-color: var(--bg-main) !important;
+            color: var(--text-primary) !important;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
+        /* MODERN CARD STYLING */
+        .interactive-card, .subject-card, .panel-card, .stats-card {
+            background-color: var(--surface-card) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 16px !important;
+            box-shadow: var(--shadow-md) !important;
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease, border-color var(--transition-speed) ease !important;
+        }
+        .interactive-card:hover, .subject-card:hover, a.interactive-card:hover {
+            transform: translateY(-5px) !important;
+            box-shadow: var(--shadow-hover) !important;
+            border-color: var(--brand-primary) !important;
+        }
+
+        /* BUTTONS & BADGES */
+        .btn-primary { background-color: var(--brand-primary) !important; color: white !important; border: none; border-radius: 8px; transition: all 0.2s ease; }
+        .btn-primary:hover { background-color: var(--brand-hover) !important; transform: scale(1.02); }
+        .badge { background-color: rgba(79, 70, 229, 0.1); color: var(--brand-primary); }
+        [data-theme="dark"] .badge { background-color: rgba(59, 130, 246, 0.15); }
+
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: 'Tajawal', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(29, 78, 216, 0.1), transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.05), transparent 50%);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 2.5rem;
+            background: var(--surface-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(12px);
+            text-align: center;
+        }
+
+        .subject-title {
+            color: var(--accent);
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+
+        .section-info {
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
+        }
+
+        .pin-input {
+            width: 250px;
+            font-family: 'Inter', sans-serif !important;
+            font-size: 4rem;
+            font-weight: 800;
+            letter-spacing: 1.5rem;
+            padding: 1rem 0;
+            padding-left: 1.5rem; /* center offset for letter-spacing */
+            text-align: center;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 16px;
+            color: #fff;
+            margin-bottom: 2.5rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .pin-input:focus {
+            outline: none;
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 20px rgba(29, 78, 216, 0.4);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--brand-primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(29, 78, 216, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--brand-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(29, 78, 216, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--text-muted);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--border-color);
+            color: white;
+            border-color: white;
+        }
+
+        .messages {
+            margin-bottom: 1.5rem;
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Prevent FOUC
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+    </script>
+
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="subject-title">{{ session.subject.name }}</h1>
+        <div class="section-info">
+            {% if session.subject_section %}
+                سكشن {{ session.subject_section.section_group }}
+            {% else %}
+                تسجيل حضور المحاضرة
+            {% endif %}
+        </div>
+
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="pin" class="pin-input" maxlength="4" autocomplete="off" required autofocus placeholder="----">
+            
+            <button type="submit" class="btn btn-primary">تأكيد الحضور ✓</button>
+            
+            {% if session.subject_section %}
+                <a href="{% url 'section_detail' session.subject_section.id %}" class="btn btn-secondary">إلغاء والعودة</a>
+            {% else %}
+                <a href="{% url 'subject_detail' session.subject.id %}" class="btn btn-secondary">إلغاء والعودة</a>
+            {% endif %}
+        </form>
+    </div>
+
+
+    <style>
+.golden-swal-popup {
+    border: 2px solid #fbbf24 !important; /* Golden border */
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.2) !important; /* Golden glow */
+    border-radius: 16px !important;
+    background: var(--surface-dark, #1e293b) !important;
+    width: auto !important;
+    max-width: 90% !important;
+    padding: 2em !important;
+}
+.golden-swal-title {
+    font-family: 'Cairo', sans-serif !important;
+    font-size: 1.3rem !important;
+    line-height: 1.6 !important;
+    color: var(--text-primary) !important;
+    word-wrap: break-word !important;
+    white-space: pre-wrap !important;
+}
+
+        /* --- GLOBAL CONTRAST PATCH --- */
+        /* Force all typography to respect the dynamic theme variables */
+        body, h1, h2, h3, h4, h5, h6, p, span:not(.badge), div, a, li, td, th, label {
+            color: var(--text-primary) !important;
+        }
+
+        /* Override old utility classes */
+        .text-white, .text-light {
+            color: var(--text-primary) !important;
+        }
+        .text-muted, .help-text {
+            color: var(--text-muted) !important;
+        }
+
+        /* Fix Form Inputs for Light/Dark Mode */
+        input:not([type="submit"]):not([type="button"]), textarea, select {
+            background-color: var(--surface-card) !important;
+            color: var(--text-primary) !important;
+            border: 1px solid var(--border-color) !important;
+        }
+        input::placeholder, textarea::placeholder {
+            color: var(--text-muted) !important;
+        }
+
+        /* Protect specific elements that MUST remain white/colored */
+        .btn-primary, .btn-danger, .btn-warning, .btn-success {
+            color: #ffffff !important;
+        }
+        .btn-primary *, .btn-danger *, .btn-warning *, .btn-success * {
+            color: #ffffff !important;
+        }
+
+        /* Fix Tagify Dropdown Contrast */
+        .tagify__dropdown__item {
+            color: var(--text-primary) !important;
+        }
+        .tagify__dropdown__item:hover {
+            color: var(--brand-hover) !important;
+        }
+</style>
+<script>
+{% if messages %}
+    const Toast = Swal.mixin({
+        position: 'center',
+        toast: false,
+        backdrop: 'rgba(0, 0, 0, 0.7)',
+        showConfirmButton: true,
+        confirmButtonText: 'حسناً',
+        confirmButtonColor: '#fbbf24', /* Golden button */
+        timer: 5000,
+        timerProgressBar: true,
+        background: 'var(--surface-dark, #1e293b)',
+        iconColor: '#fbbf24', /* Golden icon */
+        customClass: {
+            popup: 'golden-swal-popup',
+            title: 'golden-swal-title'
+        }
+    });
+    
+    {% for message in messages %}
+        let iconType = 'success';
+        let tag = '{{ message.tags }}';
+        if (tag.includes('error')) iconType = 'error';
+        if (tag.includes('warning')) iconType = 'warning';
+        if (tag.includes('info')) iconType = 'info';
+
+        Toast.fire({
+            icon: iconType,
+            title: '{{ message|escapejs }}'
+        });
+    {% endfor %}
+{% endif %}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const themeToggle = document.getElementById('theme-toggle');
+    const currentTheme = localStorage.getItem('theme');
+
+    // Apply saved theme on load (Fallback if head script missed)
+    if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        if (themeToggle) updateToggleIcon(currentTheme);
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            let switchToTheme = theme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', switchToTheme);
+            localStorage.setItem('theme', switchToTheme);
+            updateToggleIcon(switchToTheme);
+        });
+    }
+
+    function updateToggleIcon(theme) {
+        // Change icon based on mode
+        themeToggle.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+    }
+});
+</script>
+
+</body>
+</html>

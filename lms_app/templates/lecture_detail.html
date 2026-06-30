@@ -1,0 +1,505 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ lecture.title }} - {{ subject.name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=Inter:wght@500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        
+        /* LIGHT MODE (Default) */
+        :root {
+            --bg-main: #f1f5f9;       /* Slate 100 - Soft off-white */
+            --surface-card: #ffffff;  /* Pure white cards */
+            --text-primary: #0f172a;  /* Slate 900 - Deep dark blue */
+            --text-muted: #64748b;    /* Slate 500 */
+            --brand-primary: #4f46e5; /* Indigo 600 */
+            --brand-hover: #4338ca;   /* Indigo 700 */
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-hover: 0 20px 25px -5px rgba(79, 70, 229, 0.15); /* Brand tinted shadow */
+            --transition-speed: 0.3s;
+        }
+
+        /* DARK MODE */
+        [data-theme="dark"] {
+            --bg-main: #0f172a;       /* Slate 900 */
+            --surface-card: #1e293b;  /* Slate 800 */
+            --text-primary: #f8fafc;  /* Slate 50 */
+            --text-muted: #94a3b8;    /* Slate 400 */
+            --brand-primary: #3b82f6; /* Blue 500 */
+            --brand-hover: #60a5fa;   /* Blue 400 */
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.3);
+            --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.5);
+            --shadow-hover: 0 20px 25px -5px rgba(59, 130, 246, 0.25);
+        }
+
+        /* GLOBAL STYLES */
+        body {
+            background-color: var(--bg-main) !important;
+            color: var(--text-primary) !important;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
+        /* MODERN CARD STYLING */
+        .interactive-card, .subject-card, .panel-card, .stats-card {
+            background-color: var(--surface-card) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 16px !important;
+            box-shadow: var(--shadow-md) !important;
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease, border-color var(--transition-speed) ease !important;
+        }
+        .interactive-card:hover, .subject-card:hover, a.interactive-card:hover {
+            transform: translateY(-5px) !important;
+            box-shadow: var(--shadow-hover) !important;
+            border-color: var(--brand-primary) !important;
+        }
+
+        /* BUTTONS & BADGES */
+        .btn-primary { background-color: var(--brand-primary) !important; color: white !important; border: none; border-radius: 8px; transition: all 0.2s ease; }
+        .btn-primary:hover { background-color: var(--brand-hover) !important; transform: scale(1.02); }
+        .badge { background-color: rgba(79, 70, 229, 0.1); color: var(--brand-primary); }
+        [data-theme="dark"] .badge { background-color: rgba(59, 130, 246, 0.15); }
+
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: 'Tajawal', sans-serif;
+            background-image: radial-gradient(circle at top center, rgba(29, 78, 216, 0.05), transparent 60%);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* Navbar Base Styling */
+        nav {
+            background-color: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            font-family: 'Cairo', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--brand-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .header-section {
+            margin-bottom: 2rem;
+        }
+
+        .header-section h1 {
+            color: #fff;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        .header-section p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .video-container {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .content-panel {
+            background: var(--surface-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--border-color);
+            white-space: pre-wrap;
+        }
+
+        .action-area {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--brand-primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(29, 78, 216, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--brand-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(29, 78, 216, 0.4);
+        }
+
+        .btn-danger {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        .btn-warning {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: #fcd34d;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-warning:hover {
+            background-color: #f59e0b;
+            color: white;
+            border-color: #f59e0b;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Prevent FOUC
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+    </script>
+
+</head>
+<body>
+
+    <nav>
+        <a href="{% if request.user.role == 'DOCTOR' %}{% url 'doctor_dashboard' %}{% else %}{% url 'student_dashboard' %}{% endif %}" class="nav-brand">
+            المنصة التعليمية
+        </a>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <button id="theme-toggle" type="button" class="btn" style="background: var(--surface-card); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; padding: 0;">🌓</button>
+            <a href="{% url 'subject_detail' subject.id %}" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">
+                العودة للمادة
+            </a>
+        </div>
+    </nav>
+
+    <main class="container">
+        
+        <div class="header-section">
+            <h1>{{ lecture.title }}</h1>
+            <p>
+                <span style="background: rgba(59, 130, 246, 0.2); color: #93c5fd; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem;">
+                    {{ subject.name }}
+                    {% if lecture.subject_section %} - سكشن {{ lecture.subject_section.section_group }}{% endif %}
+                </span>
+                • {{ lecture.created_at|date:"d M Y" }}
+            </p>
+        </div>
+
+        {% if lecture.video_url %}
+        <div class="video-container" id="video-container">
+            <iframe id="video-iframe" src="" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+        </div>
+        {% endif %}
+
+        <div class="content-panel">
+            {% if lecture.description %}
+            <div class="description">{{ lecture.description }}</div>
+            {% else %}
+            <div class="description" style="color: var(--text-muted); font-style: italic;">لا يوجد وصف مضاف لهذه المحاضرة.</div>
+            {% endif %}
+
+            {% if lecture.assignments.all %}
+            <div style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+                <h3 style="color: #93c5fd; font-size: 1.2rem; margin-bottom: 1rem;">التكليفات المرتبطة بهذه المحاضرة 📝</h3>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    {% for assignment in lecture.assignments.all %}
+                    <div style="background: var(--surface-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span style="color: var(--border-color); font-weight: bold; font-family: 'Cairo', sans-serif;">{{ assignment.title }}</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">ميعاد التسليم: {{ assignment.due_date|date:"M d, Y H:i" }}</span>
+                        </div>
+                        <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                            أقصى عدد للملفات: {{ assignment.max_files }} | أقصى حجم: {{ assignment.max_file_size_mb }}MB | المسموح: <span style="direction: ltr; display: inline-block;">{{ assignment.allowed_extensions }}</span>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                            {% if request.user.role == 'DOCTOR' %}
+                            <a href="{% url 'edit_assignment' assignment.id %}" style="padding: 0.4rem 0.8rem; background: rgba(245, 158, 11, 0.2); color: #fcd34d; border-radius: 4px; text-decoration: none; font-size: 0.85rem;">تعديل ✏️</a>
+                            {% if assignment.is_active %}
+                            <a href="{% url 'toggle_assignment_status' assignment.id %}" style="padding: 0.4rem 0.8rem; background: rgba(239, 68, 68, 0.2); color: #fca5a5; border-radius: 4px; text-decoration: none; font-size: 0.85rem;">إغلاق التكليف 🔒</a>
+                            {% else %}
+                            <a href="{% url 'toggle_assignment_status' assignment.id %}" style="padding: 0.4rem 0.8rem; background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border-radius: 4px; text-decoration: none; font-size: 0.85rem;">فتح التكليف 🔓</a>
+                            {% endif %}
+                            <a href="{% url 'view_submissions' assignment.id %}" style="padding: 0.4rem 0.8rem; background: rgba(59, 130, 246, 0.2); color: #93c5fd; border-radius: 4px; text-decoration: none; font-size: 0.85rem;">عرض التسليمات</a>
+                            {% else %}
+                            {% if assignment.is_active %}
+                            <button onclick="document.getElementById('submit-modal-{{ assignment.id }}').style.display='block'" style="padding: 0.4rem 0.8rem; background: var(--brand-primary); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Tajawal', sans-serif;">تسليم التكليف</button>
+                            {% else %}
+                            <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.85rem;">مغلق (Closed)</span>
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if request.user.role == 'STUDENT' %}
+                    <!-- Submit Modal for Student -->
+                    <div id="submit-modal-{{ assignment.id }}" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
+                        <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem; width: 90%; max-width: 500px; position: relative; margin: 10vh auto;">
+                            <h3 style="color: white; margin-top: 0; font-family: 'Cairo', sans-serif;">تسليم {{ assignment.title }}</h3>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;">أقصى عدد للملفات: {{ assignment.max_files }} | الحجم: {{ assignment.max_file_size_mb }}MB لكل ملف<br>الامتدادات: <span style="direction: ltr; display: inline-block;">{{ assignment.allowed_extensions }}</span></p>
+                            <form method="POST" action="{% url 'submit_assignment' assignment.id %}" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div style="margin-bottom: 1.5rem;">
+                                    <input type="file" name="files" {% if assignment.max_files > 1 %}multiple{% endif %} required style="width: 100%; padding: 1rem; background: var(--border-color); border: 1px dashed var(--border-color); border-radius: 8px; color: white;">
+                                </div>
+                                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                                    <button type="button" onclick="document.getElementById('submit-modal-{{ assignment.id }}').style.display='none'" style="padding: 0.6rem 1.2rem; background: transparent; color: white; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; font-family: 'Tajawal', sans-serif;">إلغاء</button>
+                                    <button type="submit" style="padding: 0.6rem 1.2rem; background: var(--brand-primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-family: 'Tajawal', sans-serif;">تسليم الآن</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="action-area">
+                {% if lecture.file %}
+                    <a href="{{ lecture.file.url }}" download class="btn btn-primary">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                        تحميل المرفقات
+                    </a>
+                {% endif %}
+
+                {% if request.user.role == 'DOCTOR' %}
+                    <div style="margin-right: auto; display: flex; gap: 0.5rem;">
+                        <a href="{% url 'edit_lecture' lecture.id %}" class="btn btn-warning">
+                            تعديل المحاضرة ✏️
+                        </a>
+                        <form method="POST" action="{% url 'delete_material' lecture.id %}" style="margin: 0;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('هل أنت متأكد من حذف هذه المحاضرة؟');">
+                                حذف المحاضرة 🗑️
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        {% if lecture.video_url %}
+        document.addEventListener('DOMContentLoaded', function() {
+            let url = "{{ lecture.video_url|escapejs }}";
+            let embedUrl = url;
+            
+            // Handle standard YouTube URLs
+            if (url.includes('youtube.com/watch')) {
+                const urlParams = new URLSearchParams(new URL(url).search);
+                if (urlParams.has('v')) {
+                    embedUrl = `https://www.youtube.com/embed/${urlParams.get('v')}`;
+                }
+            } 
+            // Handle youtu.be short URLs
+            else if (url.includes('youtu.be/')) {
+                const videoId = url.split('youtu.be/')[1].split('?')[0];
+                embedUrl = `https://www.youtube.com/embed/${videoId}`;
+            }
+
+            document.getElementById('video-iframe').src = embedUrl;
+        });
+        {% endif %}
+    </script>
+
+    <style>
+.golden-swal-popup {
+    border: 2px solid #fbbf24 !important; /* Golden border */
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.2) !important; /* Golden glow */
+    border-radius: 16px !important;
+    background: var(--surface-dark, #1e293b) !important;
+    width: auto !important;
+    max-width: 90% !important;
+    padding: 2em !important;
+}
+.golden-swal-title {
+    font-family: 'Cairo', sans-serif !important;
+    font-size: 1.3rem !important;
+    line-height: 1.6 !important;
+    color: var(--text-primary) !important;
+    word-wrap: break-word !important;
+    white-space: pre-wrap !important;
+}
+
+        /* --- GLOBAL CONTRAST PATCH --- */
+        /* Force all typography to respect the dynamic theme variables */
+        body, h1, h2, h3, h4, h5, h6, p, span:not(.badge), div, a, li, td, th, label {
+            color: var(--text-primary) !important;
+        }
+
+        /* Override old utility classes */
+        .text-white, .text-light {
+            color: var(--text-primary) !important;
+        }
+        .text-muted, .help-text {
+            color: var(--text-muted) !important;
+        }
+
+        /* Fix Form Inputs for Light/Dark Mode */
+        input:not([type="submit"]):not([type="button"]), textarea, select {
+            background-color: var(--surface-card) !important;
+            color: var(--text-primary) !important;
+            border: 1px solid var(--border-color) !important;
+        }
+        input::placeholder, textarea::placeholder {
+            color: var(--text-muted) !important;
+        }
+
+        /* Protect specific elements that MUST remain white/colored */
+        .btn-primary, .btn-danger, .btn-warning, .btn-success {
+            color: #ffffff !important;
+        }
+        .btn-primary *, .btn-danger *, .btn-warning *, .btn-success * {
+            color: #ffffff !important;
+        }
+
+        /* Fix Tagify Dropdown Contrast */
+        .tagify__dropdown__item {
+            color: var(--text-primary) !important;
+        }
+        .tagify__dropdown__item:hover {
+            color: var(--brand-hover) !important;
+        }
+</style>
+<script>
+{% if messages %}
+    const Toast = Swal.mixin({
+        position: 'center',
+        toast: false,
+        backdrop: 'rgba(0, 0, 0, 0.7)',
+        showConfirmButton: true,
+        confirmButtonText: 'حسناً',
+        confirmButtonColor: '#fbbf24', /* Golden button */
+        timer: 5000,
+        timerProgressBar: true,
+        background: 'var(--surface-dark, #1e293b)',
+        iconColor: '#fbbf24', /* Golden icon */
+        customClass: {
+            popup: 'golden-swal-popup',
+            title: 'golden-swal-title'
+        }
+    });
+    
+    {% for message in messages %}
+        let iconType = 'success';
+        let tag = '{{ message.tags }}';
+        if (tag.includes('error')) iconType = 'error';
+        if (tag.includes('warning')) iconType = 'warning';
+        if (tag.includes('info')) iconType = 'info';
+
+        Toast.fire({
+            icon: iconType,
+            title: '{{ message|escapejs }}'
+        });
+    {% endfor %}
+{% endif %}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const themeToggle = document.getElementById('theme-toggle');
+    const currentTheme = localStorage.getItem('theme');
+
+    // Apply saved theme on load (Fallback if head script missed)
+    if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        if (themeToggle) updateToggleIcon(currentTheme);
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            let switchToTheme = theme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', switchToTheme);
+            localStorage.setItem('theme', switchToTheme);
+            updateToggleIcon(switchToTheme);
+        });
+    }
+
+    function updateToggleIcon(theme) {
+        // Change icon based on mode
+        themeToggle.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+    }
+});
+</script>
+
+</body>
+</html>

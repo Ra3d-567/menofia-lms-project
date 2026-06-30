@@ -1,0 +1,71 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block title %}Bulk Academic Assignment | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block content %}
+<div class="card card-primary card-outline">
+    <div class="card-header">
+        <h3 class="card-title">Bulk Student Enrollment</h3>
+    </div>
+    <div class="card-body">
+        {% if messages %}
+            <div class="row">
+                <div class="col-12">
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        
+        <form action="" method="post" class="form-horizontal">
+            {% csrf_token %}
+            
+            <div class="form-group row">
+                <label for="assignment_type" class="col-sm-2 col-form-label">Target Type</label>
+                <div class="col-sm-10">
+                    <select name="assignment_type" id="assignment_type" class="form-control custom-select" required>
+                        <option value="">-- Select Target Type --</option>
+                        <option value="year">Entire Academic Year</option>
+                        <option value="section">Specific Section Group</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label for="target_id" class="col-sm-2 col-form-label">Target ID</label>
+                <div class="col-sm-10">
+                    <input type="number" name="target_id" id="target_id" class="form-control" placeholder="e.g. 1 (for 1st Year or Section 1)" required min="1" max="5">
+                    <small class="form-text text-muted">Enter the year number (1-4) or section number (1-5).</small>
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label for="subject_id" class="col-sm-2 col-form-label">Select Subject</label>
+                <div class="col-sm-10">
+                    <select name="subject_id" id="subject_id" class="form-control custom-select" required>
+                        <option value="">-- Select Subject --</option>
+                        {% for subject in subjects %}
+                            <option value="{{ subject.id }}">Year {{ subject.academic_year }} - {{ subject.code }}: {{ subject.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <small class="form-text text-muted">The subject to instantly assign to the targeted students.</small>
+                </div>
+            </div>
+            
+            <div class="form-group row mt-4">
+                <div class="col-sm-10 offset-sm-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-users-cog mr-2"></i> Execute Bulk Assignment
+                    </button>
+                    <a href="{% url 'admin:index' %}" class="btn btn-default ml-2">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

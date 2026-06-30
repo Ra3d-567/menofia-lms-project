@@ -1,7 +1,10 @@
 import csv
 import random
+
 from django.core.management.base import BaseCommand
+
 from lms_app.models import User
+
 
 def get_section(name):
     if not name:

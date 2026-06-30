@@ -1,0 +1,812 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل السكشن - {{ section.subject.name }} سكشن {{ section.section_group }} - منصة كلية التربية النوعية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=Inter:wght@500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+    <style>
+
+        /* Default Body Font (Comfortable Reading) */
+        body, p, span, div, textarea, select {
+            font-family: 'Tajawal', sans-serif !important;
+        }
+
+        /* Headings (Strong and Formal) */
+        h1, h2, h3, h4, h5, h6, .subject-info h3 {
+            font-family: 'Cairo', sans-serif !important;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* Numbers, Codes, and UI Elements (Modern and Sharp) */
+        .subject-code-badge, .student-count-badge, .badge, .countdown-timer, .pin-code-display, input, button, a.action-btn {
+            font-family: 'Inter', 'Tajawal', sans-serif !important;
+        }
+
+        /* Form Inputs Override */
+        input[type="text"], input[type="password"], input[type="email"], input[type="number"] {
+            font-family: 'Inter', 'Tajawal', sans-serif !important;
+        }
+
+        
+        /* LIGHT MODE (Default) */
+        :root {
+            --bg-main: #f1f5f9;       /* Slate 100 - Soft off-white */
+            --surface-card: #ffffff;  /* Pure white cards */
+            --text-primary: #0f172a;  /* Slate 900 - Deep dark blue */
+            --text-muted: #64748b;    /* Slate 500 */
+            --brand-primary: #4f46e5; /* Indigo 600 */
+            --brand-hover: #4338ca;   /* Indigo 700 */
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-hover: 0 20px 25px -5px rgba(79, 70, 229, 0.15); /* Brand tinted shadow */
+            --transition-speed: 0.3s;
+        }
+
+        /* DARK MODE */
+        [data-theme="dark"] {
+            --bg-main: #0f172a;       /* Slate 900 */
+            --surface-card: #1e293b;  /* Slate 800 */
+            --text-primary: #f8fafc;  /* Slate 50 */
+            --text-muted: #94a3b8;    /* Slate 400 */
+            --brand-primary: #3b82f6; /* Blue 500 */
+            --brand-hover: #60a5fa;   /* Blue 400 */
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.3);
+            --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.5);
+            --shadow-hover: 0 20px 25px -5px rgba(59, 130, 246, 0.25);
+        }
+
+        /* GLOBAL STYLES */
+        body {
+            background-color: var(--bg-main) !important;
+            color: var(--text-primary) !important;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
+        /* MODERN CARD STYLING */
+        .interactive-card, .subject-card, .panel-card, .stats-card {
+            background-color: var(--surface-card) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 16px !important;
+            box-shadow: var(--shadow-md) !important;
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease, border-color var(--transition-speed) ease !important;
+        }
+        .interactive-card:hover, .subject-card:hover, a.interactive-card:hover {
+            transform: translateY(-5px) !important;
+            box-shadow: var(--shadow-hover) !important;
+            border-color: var(--brand-primary) !important;
+        }
+
+        /* BUTTONS & BADGES */
+        .btn-primary { background-color: var(--brand-primary) !important; color: white !important; border: none; border-radius: 8px; transition: all 0.2s ease; }
+        .btn-primary:hover { background-color: var(--brand-hover) !important; transform: scale(1.02); }
+        .badge { background-color: rgba(79, 70, 229, 0.1); color: var(--brand-primary); }
+        [data-theme="dark"] .badge { background-color: rgba(59, 130, 246, 0.15); }
+
+
+        body {
+            margin: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .navbar {
+            width: 100%;
+            background: var(--surface-card);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logout-btn {
+            background-color: transparent;
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 2rem;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .action-btn {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .action-btn:hover {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+        }
+        
+        .card-details {
+            background: var(--surface-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Custom Webkit Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 4px; border: 1px solid var(--border-color); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--brand-primary); }
+
+        /* Tagify Custom Dark Mode */
+        /* Force Inter font for all tags and dropdowns */
+        .tagify, .tagify__dropdown {
+            font-family: 'Inter', sans-serif !important;
+        }
+
+        .tagify {
+            --tags-border-color: rgba(255,255,255,0.2);
+            --tags-hover-border-color: var(--brand-primary);
+            --tags-focus-border-color: var(--brand-primary);
+            --tag-bg: rgba(59, 130, 246, 0.2);
+            --tag-hover: rgba(59, 130, 246, 0.4);
+            --tag-text-color: var(--text-primary);
+            --tag-text-color--edit: var(--text-primary);
+            --tag-pad: 0.3rem 0.5rem;
+            --tag-inset-shadow-size: 1.1em;
+            --tag-remove-btn-color: var(--text-primary);
+            --tag-remove-btn-bg--hover: #ef4444;
+            color: var(--text-primary);
+            border-radius: 8px;
+            width: 100%;
+            background-color: var(--bg-main);
+        }
+
+        /* Overhaul the Dropdown Menu */
+        .tagify__dropdown {
+            background-color: var(--surface-dark, #1e293b) !important;
+            border: 1px solid var(--border-color) !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            padding: 0 !important;
+            transform: translateY(5px);
+        }
+
+        /* Fix the wrapper background */
+        .tagify__dropdown__wrapper {
+            background-color: transparent !important;
+            border: none !important;
+        }
+
+        /* Style the individual extension items */
+        .tagify__dropdown__item {
+            color: var(--text-primary) !important;
+            padding: 0.6rem 1rem !important;
+            font-weight: 500 !important;
+            text-align: left !important;
+            direction: ltr !important;
+            transition: all 0.2s ease !important;
+            border-bottom: 1px solid var(--border-color) !important;
+            font-size: 0.95rem !important;
+            cursor: pointer !important;
+        }
+
+        /* Remove border from the last item */
+        .tagify__dropdown__item:last-child {
+            border-bottom: none !important;
+        }
+
+        /* Hover state for items */
+        .tagify__dropdown__item:hover {
+            background-color: rgba(59, 130, 246, 0.15) !important;
+            color: #60a5fa !important;
+            padding-left: 1.5rem !important;
+        }
+
+        /* Active/Selected state */
+        .tagify__dropdown__item--active {
+            background-color: var(--primary, #3b82f6) !important;
+            color: #ffffff !important;
+        }
+
+        /* 1. Premium Blurred Background Effect */
+        .modal-backdrop.show {
+            opacity: 0.7 !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            background-color: rgba(10, 10, 20, 0.5) !important;
+        }
+
+        /* 2. Sleek Rounded Modal Edges & Deep Shadow */
+        .modal-content {
+            border-radius: 24px !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5) !important;
+            background: linear-gradient(145deg, var(--surface-card), rgba(20, 20, 30, 0.95)) !important;
+            overflow: hidden;
+        }
+
+        /* Optional: Smooth out the header border */
+        .modal-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Prevent FOUC
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+    </script>
+
+</head>
+<body>
+    <nav class="navbar">
+                <a style="display: flex; align-items: center; gap: 15px; text-decoration: none;" href="
+    {% if request.user.is_authenticated %}
+        {% if request.user.role == 'STUDENT' %}
+            {% url 'student_dashboard' %}
+        {% elif request.user.role == 'DOCTOR' %}
+            {% url 'doctor_dashboard' %}
+        {% else %}
+            {% url 'login' %}
+        {% endif %}
+    {% else %}
+        {% url 'login' %}
+    {% endif %}
+">
+            <img src="{% static 'images/logo_nav.png' %}" alt="University Logo" style="height: 45px; width: 45px; object-fit: contain; background-color: white; border-radius: 50%; padding: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h1 style="font-family: 'Cairo', sans-serif !important; font-weight: 700; font-size: 1.3rem; color: var(--text-primary); margin: 0;">منصة كلية التربية النوعية</h1>
+        </a>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            {% if request.user.role == 'DOCTOR' %}
+            <a href="{% url 'doctor_dashboard' %}" class="logout-btn" style="border-color: rgba(59, 130, 246, 0.3); color: #93c5fd;" onmouseover="this.style.backgroundColor='rgba(59, 130, 246, 0.1)'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#93c5fd';">⬅️ عودة للوحة التحكم</a>
+            {% else %}
+            <a href="{% url 'student_dashboard' %}" class="logout-btn" style="border-color: rgba(59, 130, 246, 0.3); color: #93c5fd;" onmouseover="this.style.backgroundColor='rgba(59, 130, 246, 0.1)'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#93c5fd';">⬅️ عودة للوحة التحكم</a>
+            {% endif %}
+            <a href="/logout/" class="logout-btn">تسجيل الخروج</a>
+            <button id="theme-toggle" type="button" class="btn" style="background: var(--surface-card); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; padding: 0;">🌓</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+            <div>
+                <span style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; border: 1px solid rgba(59, 130, 246, 0.3);">سكشن {{ section.section_group }}</span>
+                <h2 style="margin: 0.5rem 0 0 0; font-size: 2rem; color: #fff;">{{ section.subject.name }}</h2>
+            </div>
+            <div style="text-align: left;">
+                {% if request.user.role == 'DOCTOR' %}
+                    <div class="d-flex align-items-center gap-3" style="margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 6px; display: inline-flex;">
+                        <a href="{% url 'section_roster' section.id %}" class="badge" style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; font-weight: bold; background-color: rgba(59, 130, 246, 0.15); color: var(--brand-primary); transition: all 0.3s ease; display: inline-block;">👥 عدد الطلاب: {{ section.students.count|default:"0" }} طالب</a>
+                        
+                        <!-- NEW: Create Exam Button for Section -->
+                        {% if request.user == section.instructor %}
+                            <button type="button" id="createExamBtn" style="background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3); padding: 8px 15px; border-radius: 6px; font-weight: bold; font-family: 'Cairo', sans-serif; transition: 0.3s; cursor: pointer;">
+    ➕ إنشاء امتحان للسكشن
+</button>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if request.user.role == 'STUDENT' and active_sessions %}
+            <div style="margin-bottom: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+                {% for session in active_sessions %}
+                <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; backdrop-filter: blur(8px);">
+                    <div>
+                        <h3 style="margin: 0 0 0.5rem 0; color: #10b981; display: flex; align-items: center; gap: 0.5rem; font-size: 1.3rem;">
+                            🟢 تسجيل الحضور متاح للسكشن
+                        </h3>
+                    </div>
+                    <a href="{% url 'student_enter_pin' session.id %}" style="padding: 0.5rem 1.5rem; background-color: var(--brand-primary); border-radius: 8px; color: white; text-decoration: none; font-weight: bold; font-family: 'Cairo', sans-serif;">تسجيل حضور محاضرة اليوم 📝</a>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <!-- Materials Column -->
+            <div class="card-details">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="margin: 0; color: #fff;">شروحات وملخصات السكشن</h3>
+                </div>
+                
+                {% if request.user.role == 'DOCTOR' %}
+                <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#addSectionMaterialModal" style="width: 100%; margin-bottom: 15px; font-family: 'Cairo';">+ إضافة شرح للسكشن</button>
+                {% endif %}
+                
+                {% if materials %}
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    {% for material in materials %}
+                    <div style="background: rgba(30, 58, 138, 0.1); border: 1px solid var(--border-color); border-radius: 12px; transition: transform 0.2s, border-color 0.2s; overflow: hidden; display: flex; align-items: center;" onmouseover="this.style.borderColor='var(--brand-primary)';" onmouseout="this.style.borderColor='var(--border-color)';">
+                        <a href="{% url 'lecture_detail' material.id %}" style="flex-grow: 1; padding: 1.25rem; text-decoration: none; display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(59, 130, 246, 0.2); display: flex; align-items: center; justify-content: center; color: #60a5fa;">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                                <div>
+                                    <div style="color: var(--text-primary); font-weight: 700; font-size: 1.1rem; font-family: 'Cairo', sans-serif;">{{ material.title }}</div>
+                                    <div style="color: #64748b; font-size: 0.85rem; margin-top: 0.25rem;">تم النشر: {{ material.created_at|date:"M d, Y" }}</div>
+                                </div>
+                            </div>
+                        </a>
+                        {% if request.user.role == 'DOCTOR' %}
+                        <div style="display: flex; gap: 0.25rem; padding: 0 1rem; align-items: center;">
+                            <a href="{% url 'edit_lecture' material.id %}" style="color: #fcd34d; text-decoration: none; padding: 0.5rem; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'" title="تعديل المحاضرة">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                            </a>
+                            <form method="POST" action="{% url 'delete_material' material.id %}" style="margin: 0;">
+                                {% csrf_token %}
+                                <button type="submit" style="background: transparent; border: none; color: #ef4444; cursor: pointer; padding: 0.5rem; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'" title="حذف المادة">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p style="color: var(--text-muted); font-size: 0.9rem;">لم يتم رفع شروحات للسكشن بعد.</p>
+                {% endif %}
+            </div>
+
+            <!-- Assignments Column -->
+            <div class="card-details">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="margin: 0; color: #fff;">تكليفات السكشن</h3>
+                </div>
+                
+                {% if request.user.role == 'DOCTOR' %}
+                <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#addSectionAssignmentModal" style="width: 100%; margin-bottom: 15px; font-family: 'Cairo';">+ إضافة تكليف للسكشن</button>
+                {% endif %}
+
+                {% if assignments %}
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    {% for assignment in assignments %}
+                    <li style="margin-bottom: 0.75rem; background: var(--surface-card); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span style="color: var(--border-color); font-weight: 500;">{{ assignment.title }}</span>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">ميعاد التسليم: {{ assignment.due_date|date:"M d, Y H:i" }}</span>
+                        </div>
+                        
+                        {% if request.user.role == 'DOCTOR' %}
+                        <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; flex-wrap: wrap;">
+                            <a href="{% url 'view_submissions' assignment.id %}" class="action-btn" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">التسليمات</a>
+                            <a href="{% url 'edit_assignment' assignment.id %}" class="action-btn" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: rgba(245, 158, 11, 0.2); color: #fcd34d; border-color: rgba(245, 158, 11, 0.3);">تعديل ✏️</a>
+                            {% if assignment.is_active %}
+                            <a href="{% url 'toggle_assignment_status' assignment.id %}" class="action-btn" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: rgba(239, 68, 68, 0.2); color: #fca5a5; border-color: rgba(239, 68, 68, 0.3);">إغلاق 🔒</a>
+                            {% else %}
+                            <a href="{% url 'toggle_assignment_status' assignment.id %}" class="action-btn" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.3);">فتح 🔓</a>
+                            {% endif %}
+                            <form method="POST" action="{% url 'delete_assignment' assignment.id %}" style="margin: 0;">
+                                {% csrf_token %}
+                                <button type="submit" class="action-btn" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.1); padding: 0.2rem 0.5rem; font-size: 0.75rem;">حذف</button>
+                            </form>
+                        </div>
+                        {% else %}
+                        <!-- Student Submission UI -->
+                        {% if assignment.user_submission %}
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border-color);">
+                                {% if assignment.user_submission.grade is not None %}
+                                    <span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">✅ التقييم: {{ assignment.user_submission.grade }} / {{ assignment.max_grade }}</span>
+                                {% else %}
+                                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                                        <span style="background: rgba(234, 179, 8, 0.15); color: #eab308; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">⏳ في انتظار التقييم</span>
+                                        <form method="POST" action="{% url 'unsubmit_assignment' assignment.user_submission.id %}" style="margin: 0;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="action-btn" style="background: rgba(239, 68, 68, 0.15); color: #fca5a5; border-color: rgba(239, 68, 68, 0.3); padding: 0.2rem 0.5rem; font-size: 0.75rem;">إلغاء التسليم</button>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% if assignment.lecture %}
+                                <a href="{% url 'lecture_detail' assignment.lecture.id %}" class="btn btn-primary btn-sm" style="display: block; text-align: center; margin-top: 12px; width: 100%;">عرض التكليف 🚀</a>
+                            {% endif %}
+                        {% else %}
+                            {% if not assignment.is_active %}
+                                <button disabled class="btn btn-secondary btn-sm" style="display: block; text-align: center; margin-top: 12px; width: 100%; cursor: not-allowed; opacity: 0.7;">التكليف مغلق 🔒</button>
+                            {% elif now > assignment.due_date %}
+                                <button disabled class="btn btn-secondary btn-sm" style="display: block; text-align: center; margin-top: 12px; width: 100%; cursor: not-allowed; opacity: 0.7;">انتهى وقت التسليم ❌</button>
+                            {% else %}
+                                {% if assignment.lecture %}
+                                    <a href="{% url 'lecture_detail' assignment.lecture.id %}" class="btn btn-primary btn-sm" style="display: block; text-align: center; margin-top: 12px; width: 100%;">الذهاب للتكليف 🚀</a>
+                                {% else %}
+                                <form method="POST" action="{% url 'submit_assignment' assignment.id %}" enctype="multipart/form-data" style="display: flex; flex-direction: row; gap: 0.5rem; align-items: center; margin-top: 0.5rem;">
+                                    {% csrf_token %}
+                                    <input type="file" name="files" multiple required style="font-size: 0.75rem; color: var(--text-muted); max-width: 200px;">
+                                    <button type="submit" class="action-btn" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">رفع الملف</button>
+                                </form>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p style="color: var(--text-muted); font-size: 0.9rem;">لا توجد تكليفات للسكشن حالياً.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Announcements Full Width -->
+        {% if announcements %}
+        <div class="card-details">
+            <h3 style="margin: 0 0 1rem 0; color: var(--text-primary);">الإعلانات والتنبيهات</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
+                {% for announcement in announcements %}
+                <div style="background: var(--surface-card); padding: 1rem; border-radius: 8px; border: 1px solid rgba(234, 179, 8, 0.2); border-left: 3px solid #eab308;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                        <h4 style="margin: 0; color: var(--text-primary); font-size: 1rem;">{{ announcement.title }}</h4>
+                        <span style="font-size: 0.7rem; color: #64748b;">{{ announcement.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; white-space: pre-wrap;">{{ announcement.content }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </main>
+
+    <style>
+.golden-swal-popup {
+    border: 2px solid #fbbf24 !important; /* Golden border */
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.2) !important; /* Golden glow */
+    border-radius: 16px !important;
+    background: var(--surface-dark, #1e293b) !important;
+    width: auto !important;
+    max-width: 90% !important;
+    padding: 2em !important;
+}
+.golden-swal-title {
+    font-family: 'Cairo', sans-serif !important;
+    font-size: 1.3rem !important;
+    line-height: 1.6 !important;
+    color: var(--text-primary) !important;
+    word-wrap: break-word !important;
+    white-space: pre-wrap !important;
+}
+
+        /* --- GLOBAL CONTRAST PATCH --- */
+        /* Force all typography to respect the dynamic theme variables */
+        body, h1, h2, h3, h4, h5, h6, p, span:not(.badge), div, a, li, td, th, label {
+            color: var(--text-primary) !important;
+        }
+
+        /* Override old utility classes */
+        .text-white, .text-light {
+            color: var(--text-primary) !important;
+        }
+        .text-muted, .help-text {
+            color: var(--text-muted) !important;
+        }
+
+        /* Fix Form Inputs for Light/Dark Mode */
+        input:not([type="submit"]):not([type="button"]), textarea, select {
+            background-color: var(--surface-card) !important;
+            color: var(--text-primary) !important;
+            border: 1px solid var(--border-color) !important;
+        }
+        input::placeholder, textarea::placeholder {
+            color: var(--text-muted) !important;
+        }
+
+        /* Protect specific elements that MUST remain white/colored */
+        .btn-primary, .btn-danger, .btn-warning, .btn-success {
+            color: #ffffff !important;
+        }
+        .btn-primary *, .btn-danger *, .btn-warning *, .btn-success * {
+            color: #ffffff !important;
+        }
+
+        /* Fix Tagify Dropdown Contrast */
+        .tagify__dropdown__item {
+            color: var(--text-primary) !important;
+        }
+        .tagify__dropdown__item:hover {
+            color: var(--brand-hover) !important;
+        }
+</style>
+<script>
+{% if messages %}
+    const Toast = Swal.mixin({
+        position: 'center',
+        toast: false,
+        backdrop: 'rgba(0, 0, 0, 0.7)',
+        showConfirmButton: true,
+        confirmButtonText: 'حسناً',
+        confirmButtonColor: '#fbbf24', /* Golden button */
+        timer: 5000,
+        timerProgressBar: true,
+        background: 'var(--surface-dark, #1e293b)',
+        iconColor: '#fbbf24', /* Golden icon */
+        customClass: {
+            popup: 'golden-swal-popup',
+            title: 'golden-swal-title'
+        }
+    });
+    
+    {% for message in messages %}
+        let iconType = 'success';
+        let tag = '{{ message.tags }}';
+        if (tag.includes('error')) iconType = 'error';
+        if (tag.includes('warning')) iconType = 'warning';
+        if (tag.includes('info')) iconType = 'info';
+
+        Toast.fire({
+            icon: iconType,
+            title: '{{ message|escapejs }}'
+        });
+    {% endfor %}
+{% endif %}
+</script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var inputs = document.querySelectorAll('.tagify-extensions');
+        inputs.forEach(function(input) {
+            new Tagify(input, {
+                whitelist: [
+                    ".pdf", ".docx", ".doc", ".xlsx", ".xls", ".pptx", ".ppt", 
+                    ".txt", ".zip", ".rar", ".7z", 
+                    ".jpg", ".jpeg", ".png", ".gif", 
+                    ".py", ".cpp", ".java", ".html", ".css", ".js"
+                ],
+                maxTags: 15,
+                dropdown: {
+                    maxItems: 20,           
+                    classname: "tags-look", 
+                    enabled: 0,             
+                    closeOnSelect: false    
+                },
+                originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
+            });
+        });
+    });
+    </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const themeToggle = document.getElementById('theme-toggle');
+    const currentTheme = localStorage.getItem('theme');
+
+    // Apply saved theme on load (Fallback if head script missed)
+    if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        if (themeToggle) updateToggleIcon(currentTheme);
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            let switchToTheme = theme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', switchToTheme);
+            localStorage.setItem('theme', switchToTheme);
+            updateToggleIcon(switchToTheme);
+        });
+    }
+
+    function updateToggleIcon(theme) {
+        // Change icon based on mode
+        themeToggle.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+    }
+});
+</script>
+
+
+
+
+<!-- Custom Glassmorphism Exam Modal (Pure HTML/CSS/JS) -->
+<div id="customExamModalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; dir='rtl'; font-family: 'Cairo', sans-serif;">
+    <div style="background: #1e293b; width: 90%; max-width: 500px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); overflow: hidden; transform: scale(0.95); animation: modalPop 0.3s forwards ease-out;">
+        
+        <!-- Header -->
+        <div style="padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
+            <h5 style="color: white; font-weight: bold; margin: 0;">📝 إنشاء امتحان جديد</h5>
+            <button type="button" id="closeExamModalBtn" style="background: transparent; border: none; color: #94a3b8; font-size: 1.8rem; cursor: pointer; line-height: 1; padding: 0;">&times;</button>
+        </div>
+        
+        <!-- Form -->
+        <form action="{% url 'create_exam' section.subject.id %}" method="POST" style="margin: 0;">
+            {% csrf_token %}
+            <input type="hidden" name="section_id" value="{{ section.id }}">
+            <div style="padding: 25px;">
+                <label style="color: #cbd5e1; margin-bottom: 10px; display: block; font-size: 0.95rem;">عنوان الامتحان (مثال: ميدتيرم، كويز 1)</label>
+                <input type="text" name="title" required style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 12px 15px; border-radius: 8px; font-family: 'Cairo', sans-serif; outline: none;" placeholder="اكتب اسم الامتحان هنا...">
+            </div>
+            
+            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.1); display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" id="cancelExamModalBtn" style="background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo', sans-serif; transition: 0.3s;">إلغاء</button>
+                <button type="submit" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Cairo', sans-serif; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);">إنشاء والبدء 🚀</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    @keyframes modalPop {
+        0% { transform: scale(0.9); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var openBtn = document.getElementById('createExamBtn');
+    var overlay = document.getElementById('customExamModalOverlay');
+    var closeBtn = document.getElementById('closeExamModalBtn');
+    var cancelBtn = document.getElementById('cancelExamModalBtn');
+    
+    if(openBtn && overlay) {
+        // Open Modal
+        openBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            overlay.style.display = 'flex';
+        });
+        
+        // Close Logic
+        function closeModal() {
+            overlay.style.display = 'none';
+        }
+        
+        if(closeBtn) closeBtn.addEventListener('click', closeModal);
+        if(cancelBtn) cancelBtn.addEventListener('click', closeModal);
+        
+        // Close on outside click
+        overlay.addEventListener('click', function(e) {
+            if(e.target === overlay) {
+                closeModal();
+            }
+        });
+    }
+});
+</script>
+{% if request.user.role == 'DOCTOR' %}
+<!-- Modal 1: Add Section Material -->
+<div class="modal fade" id="addSectionMaterialModal" tabindex="-1" aria-labelledby="addSectionMaterialModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background-color: var(--surface-card); border: 1px solid rgba(255,255,255,0.1);">
+      <div class="modal-header border-0 d-flex justify-content-between align-items-center" style="padding: 20px 25px; border-bottom: 1px solid rgba(255,255,255,0.05) !important;">
+        <h5 class="modal-title fw-bold" id="addSectionMaterialModalLabel" style="font-family: 'Cairo', sans-serif; color: white; margin: 0;">إضافة شرح جديد للسكشن 📚</h5>
+        <button type="button" class="btn-close btn-close-white m-0" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="padding: 25px;">
+        <form method="POST" action="{% url 'upload_material_section' section.id %}" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1rem;">
+            {% csrf_token %}
+            <input type="text" name="title" placeholder="عنوان الشرح (مطلوب)" required style="background-color: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px 15px; font-family: 'Tajawal', sans-serif; width: 100%; margin-bottom: 18px;">
+            <textarea name="description" placeholder="وصف المادة أو ملاحظات للطلاب (اختياري)" rows="3" style="background-color: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px 15px; font-family: 'Tajawal', sans-serif; width: 100%; margin-bottom: 18px; resize: vertical;"></textarea>
+            <input type="url" name="video_url" placeholder="رابط فيديو يوتيوب (اختياري)" style="background-color: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px 15px; font-family: 'Tajawal', sans-serif; width: 100%; margin-bottom: 18px; direction: ltr; text-align: left;">
+            <input type="file" name="file" class="form-control" style="background-color: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px 15px; font-family: 'Tajawal', sans-serif; width: 100%; margin-bottom: 18px;">
+            <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                <button type="submit" style="width: 100%; background: var(--brand-primary, #0d6efd); color: white; border-radius: 10px; padding: 12px; font-weight: bold; font-family: 'Cairo', sans-serif; border: none; margin-top: 10px; font-size: 16px; transition: 0.3s;">نشر الشرح</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal 2: Add Section Assignment -->
+<div class="modal fade" id="addSectionAssignmentModal" tabindex="-1" aria-labelledby="addSectionAssignmentModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background-color: var(--surface-card); border: 1px solid rgba(255,255,255,0.1);">
+      <div class="modal-header border-0 d-flex justify-content-between align-items-center" style="padding: 20px 25px; border-bottom: 1px solid rgba(255,255,255,0.05) !important;">
+        <h5 class="modal-title fw-bold" id="addSectionAssignmentModalLabel" style="font-family: 'Cairo', sans-serif; color: white; margin: 0;">إضافة تكليف جديد 📝</h5>
+        <button type="button" class="btn-close btn-close-white m-0" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="padding: 25px;">
+        <form method="POST" action="{% url 'create_assignment_section' section.id %}" style="display: flex; flex-direction: column; gap: 1rem;">
+            {% csrf_token %}
+            <input type="text" name="title" placeholder="عنوان التكليف (مطلوب)" required style="background-color: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px 15px; font-family: 'Tajawal', sans-serif; width: 100%; margin-bottom: 18px; box-sizing: border-box;">
+            <textarea name="description" placeholder="تفاصيل التكليف (اختياري)" rows="2" style="background-color: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px 15px; font-family: 'Tajawal', sans-serif; width: 100%; margin-bottom: 18px; box-sizing: border-box; resize: vertical;"></textarea>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">تاريخ التسليم (مطلوب)</label>
+                    <input type="datetime-local" name="due_date" required style="background-color: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px 15px; font-family: 'Tajawal', sans-serif; width: 100%; margin-bottom: 18px; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">الدرجة</label>
+                    <input type="number" name="max_grade" placeholder="الدرجة" value="100" required style="background-color: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px 15px; font-family: 'Tajawal', sans-serif; width: 100%; margin-bottom: 18px; box-sizing: border-box;">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                <div>
+                    <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">ربط بمحاضرة (اختياري)</label>
+                    <select name="lecture_id" style="background-color: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px 15px; font-family: 'Tajawal', sans-serif; width: 100%; margin-bottom: 18px; box-sizing: border-box;">
+                        <option value="">بدون ربط</option>
+                        {% for material in materials %}
+                            <option value="{{ material.id }}" style="color: black;">{{ material.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">أقصى عدد للملفات</label>
+                    <input type="number" name="max_files" value="1" min="1" max="10" required style="background-color: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px 15px; font-family: 'Tajawal', sans-serif; width: 100%; margin-bottom: 18px; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">أقصى حجم (MB)</label>
+                    <input type="number" name="max_file_size_mb" value="10" min="1" max="50" required style="background-color: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px 15px; font-family: 'Tajawal', sans-serif; width: 100%; margin-bottom: 18px; box-sizing: border-box;">
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; align-items: center; justify-content: space-between; margin-top: 0.5rem;">
+                <div style="flex-grow: 1;">
+                    <input type="text" name="allowed_extensions" class="tagify-extensions" placeholder="الامتدادات المسموحة (مثال: .pdf,.docx,.zip)" value=".pdf,.docx,.zip" style="background-color: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px 15px; font-family: 'Tajawal', sans-serif; width: 100%; margin-bottom: 18px; box-sizing: border-box; direction: ltr; text-align: right;">
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                <button type="submit" style="width: 100%; background: var(--brand-primary, #0d6efd); color: white; border-radius: 10px; padding: 12px; font-weight: bold; font-family: 'Cairo', sans-serif; border: none; margin-top: 10px; font-size: 16px; transition: 0.3s;">نشر التكليف</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

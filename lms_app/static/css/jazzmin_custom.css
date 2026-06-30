@@ -1,0 +1,8 @@
+.login-box-msg {
+    font-size: 1.8rem !important;
+    font-weight: 700 !important;
+    color: var(--text-primary) !important;
+    padding-bottom: 20px !important;
+    border-bottom: 2px solid var(--primary) !important;
+    margin-bottom: 20px !important;
+}

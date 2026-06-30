@@ -6,7 +6,9 @@ from lms_app import views
 
 urlpatterns = [
     path('secret-uni-portal/logout/', views.user_logout, name='custom_admin_logout'),
+    path('secret-uni-portal/register-device/', views.register_admin_device, name='register_admin_device'),
     path('secret-uni-portal/', admin.site.urls),
+    path('', views.home_redirect, name='home_root'),
     path('', include('lms_app.urls')),
 ]
 

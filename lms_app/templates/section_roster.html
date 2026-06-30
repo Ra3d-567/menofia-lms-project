@@ -1,0 +1,298 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سجل الطلاب - سكشن {{ section.section_group }} - منصة كلية التربية النوعية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=Inter:wght@500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Default Body Font */
+        body, p, span, div, td, th { font-family: 'Tajawal', sans-serif !important; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 700; }
+        .badge, .inter-font { font-family: 'Inter', 'Tajawal', sans-serif !important; }
+
+        /* LIGHT MODE (Default) */
+        :root {
+            --bg-main: #f1f5f9;       /* Slate 100 - Soft off-white */
+            --surface-card: #ffffff;  /* Pure white cards */
+            --text-primary: #0f172a;  /* Slate 900 - Deep dark blue */
+            --text-muted: #64748b;    /* Slate 500 */
+            --brand-primary: #4f46e5; /* Indigo 600 */
+            --brand-hover: #4338ca;   /* Indigo 700 */
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-hover: 0 20px 25px -5px rgba(79, 70, 229, 0.15); /* Brand tinted shadow */
+            --transition-speed: 0.3s;
+        }
+
+        /* DARK MODE */
+        [data-theme="dark"] {
+            --bg-main: #0f172a;       /* Slate 900 */
+            --surface-card: #1e293b;  /* Slate 800 */
+            --text-primary: #f8fafc;  /* Slate 50 */
+            --text-muted: #94a3b8;    /* Slate 400 */
+            --brand-primary: #3b82f6; /* Blue 500 */
+            --brand-hover: #60a5fa;   /* Blue 400 */
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.3);
+            --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.5);
+            --shadow-hover: 0 20px 25px -5px rgba(59, 130, 246, 0.25);
+        }
+
+        /* GLOBAL STYLES */
+        body {
+            background-color: var(--bg-main) !important;
+            color: var(--text-primary) !important;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            width: 100%;
+            background: var(--surface-card);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: auto;
+            object-fit: contain;
+            margin-left: 0.5rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            box-sizing: border-box;
+        }
+
+        .interactive-card {
+            background-color: var(--surface-card) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 16px !important;
+            box-shadow: var(--shadow-md) !important;
+            padding: 2rem;
+            overflow-x: auto;
+        }
+
+        .action-btn {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .action-btn:hover {
+            color: white !important;
+            background-color: var(--brand-primary);
+            border-color: var(--brand-primary);
+        }
+
+        /* Modern Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            margin-top: 1rem;
+        }
+
+        th {
+            background-color: var(--surface-card);
+            color: var(--text-muted);
+            padding: 1rem;
+            font-size: 0.9rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 1rem;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.2s;
+        }
+
+        tr:hover td {
+            background-color: rgba(96, 165, 250, 0.05);
+        }
+
+        .count-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .attendance-badge {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+        
+        .grade-badge {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .submission-badge {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+    </style>
+    <script>
+        // Prevent FOUC
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+    </script>
+</head>
+<body>
+
+    <nav class="navbar">
+                <a style="display: flex; align-items: center; gap: 15px; text-decoration: none;" href="
+    {% if request.user.is_authenticated %}
+        {% if request.user.role == 'STUDENT' %}
+            {% url 'student_dashboard' %}
+        {% elif request.user.role == 'DOCTOR' %}
+            {% url 'doctor_dashboard' %}
+        {% else %}
+            {% url 'login' %}
+        {% endif %}
+    {% else %}
+        {% url 'login' %}
+    {% endif %}
+">
+            <img src="{% static 'images/logo_nav.png' %}" alt="University Logo" style="height: 45px; width: 45px; object-fit: contain; background-color: white; border-radius: 50%; padding: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h1 style="font-family: 'Cairo', sans-serif !important; font-weight: 700; font-size: 1.3rem; color: var(--text-primary); margin: 0;">منصة كلية التربية النوعية</h1>
+        </a>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <a href="{% url 'doctor_dashboard' %}" class="action-btn">لوحة التحكم الرئيسية</a>
+            <button id="theme-toggle" type="button" class="btn" style="background: var(--surface-card); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; padding: 0;">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div>
+                <h2 style="margin: 0; color: var(--text-primary);">سجل طلاب سكشن {{ section.section_group }}</h2>
+                <p style="color: var(--text-muted); margin: 0.5rem 0 0 0;">{{ section.subject.name }} - الموعد: {{ section.get_day_of_week_display }} {{ section.start_time|time:"H:i" }}</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <form action="{% url 'update_section_grade' section.id %}" method="post" style="display: flex; gap: 5px; align-items: center;">
+                    {% csrf_token %}
+                    <label for="max_grade" style="color: var(--text-muted); font-size: 0.9rem;">الدرجة النهائية:</label>
+                    <input type="number" name="max_grade" value="{{ section.max_total_grade }}" min="1" style="width: 70px; padding: 0.3rem; border: 1px solid var(--border-color); border-radius: 4px; background: var(--surface-card); color: var(--text-primary);">
+                    <button type="submit" class="action-btn" style="padding: 0.3rem 0.6rem; background: var(--surface-card);">تحديث</button>
+                </form>
+                <a href="{% url 'export_grades_csv_section' section.subject.id section.id %}" class="action-btn" style="background-color: rgba(16, 185, 129, 0.1); color: #10b981; border-color: rgba(16, 185, 129, 0.3);">⬇️ تحميل الدرجات (CSV)</a>
+                <a href="{% url 'section_detail' section.id %}" class="action-btn">⬅️ العودة للسكشن</a>
+            </div>
+        </div>
+
+        <div class="interactive-card">
+            <table>
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border-color);">
+                        <th style="white-space: nowrap;">اسم الطالب</th>
+                        <th style="white-space: nowrap;">الكود الأكاديمي</th>
+                        
+                        {% for exam in exams %}
+                        <th style="min-width: 150px; text-align: center;">
+                            <div style="margin-bottom: 5px; color: var(--text-primary);">{{ exam.title }}</div>
+                            {% if exam.exam_type == 'SECTION' %}
+                                <span class="badge" style="background-color: rgba(14, 165, 233, 0.15); color: #0ea5e9; font-size: 0.75rem;">امتحان سكشن - {{ exam.subject_section.name }}</span>
+                            {% else %}
+                                <span class="badge" style="background-color: rgba(99, 102, 241, 0.15); color: #6366f1; font-size: 0.75rem;">امتحان محاضرة</span>
+                            {% endif %}
+                        </th>
+                        {% endfor %}
+
+                        <th style="white-space: nowrap; text-align: center;">التكليفات المُسلمة</th>
+                        <th style="white-space: nowrap; text-align: center;">مجموع الدرجات 🏆</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td style="font-weight: 600; white-space: nowrap;">{{ student.first_name }} {{ student.last_name }} <br><span style="color: var(--text-muted); font-size: 0.8rem; font-weight: normal;">(@{{ student.username }})</span></td>
+                        <td class="inter-font" style="color: var(--text-muted); white-space: nowrap; vertical-align: middle;">{{ student.university_id|default:"-" }}</td>
+                        
+                        {% for score in student.ordered_exam_scores %}
+                        <td style="text-align: center; vertical-align: middle;">
+                            {% if score is not None %}
+                                <span style="color: #10b981; background: rgba(16, 185, 129, 0.1); padding: 4px 10px; border-radius: 6px; font-weight: bold;" class="inter-font">{{ score }}</span>
+                            {% else %}
+                                <span class="text-muted" style="font-size: 0.85rem; opacity: 0.6;">- لم يمتحن -</span>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+
+                        <td style="text-align: center; vertical-align: middle;"><span style="background: rgba(59, 130, 246, 0.15); color: #3b82f6; padding: 4px 10px; border-radius: 6px; font-weight: bold;">{{ student.submission_count }}</span></td>
+                        <td style="text-align: center; vertical-align: middle;"><span style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); padding: 6px 12px; border-radius: 6px; font-weight: bold;">{{ student.total_grade }} / {{ section.max_total_grade }}</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="100" style="text-align: center; color: var(--text-muted); padding: 2rem;">لا يوجد طلاب مسجلين في هذا السكشن.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeToggle = document.getElementById('theme-toggle');
+        const currentTheme = localStorage.getItem('theme');
+
+        if (currentTheme) {
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            if (themeToggle) updateToggleIcon(currentTheme);
+        }
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                let theme = document.documentElement.getAttribute('data-theme');
+                let switchToTheme = theme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', switchToTheme);
+                localStorage.setItem('theme', switchToTheme);
+                updateToggleIcon(switchToTheme);
+            });
+        }
+
+        function updateToggleIcon(theme) {
+            themeToggle.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+        }
+    });
+    </script>
+</body>
+</html>

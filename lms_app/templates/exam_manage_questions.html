@@ -1,0 +1,524 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل المادة - {{ subject.name }} - منصة كلية التربية النوعية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=Inter:wght@500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+    <style>
+
+        /* Default Body Font (Comfortable Reading) */
+        body, p, span, div, textarea, select {
+            font-family: 'Tajawal', sans-serif !important;
+        }
+
+        /* Headings (Strong and Formal) */
+        h1, h2, h3, h4, h5, h6, .subject-info h3 {
+            font-family: 'Cairo', sans-serif !important;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* Numbers, Codes, and UI Elements (Modern and Sharp) */
+        .subject-code-badge, .student-count-badge, .badge, .countdown-timer, .pin-code-display, input, button, a.action-btn {
+            font-family: 'Inter', 'Tajawal', sans-serif !important;
+        }
+
+        /* Form Inputs Override */
+        input[type="text"], input[type="password"], input[type="email"], input[type="number"] {
+            font-family: 'Inter', 'Tajawal', sans-serif !important;
+        }
+
+        
+        /* LIGHT MODE (Default) */
+        :root {
+            --bg-main: #f1f5f9;       /* Slate 100 - Soft off-white */
+            --surface-card: #ffffff;  /* Pure white cards */
+            --text-primary: #0f172a;  /* Slate 900 - Deep dark blue */
+            --text-muted: #64748b;    /* Slate 500 */
+            --brand-primary: #4f46e5; /* Indigo 600 */
+            --brand-hover: #4338ca;   /* Indigo 700 */
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-hover: 0 20px 25px -5px rgba(79, 70, 229, 0.15); /* Brand tinted shadow */
+            --transition-speed: 0.3s;
+        }
+
+        /* DARK MODE */
+        [data-theme="dark"] {
+            --bg-main: #0f172a;       /* Slate 900 */
+            --surface-card: #1e293b;  /* Slate 800 */
+            --text-primary: #f8fafc;  /* Slate 50 */
+            --text-muted: #94a3b8;    /* Slate 400 */
+            --brand-primary: #3b82f6; /* Blue 500 */
+            --brand-hover: #60a5fa;   /* Blue 400 */
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.3);
+            --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.5);
+            --shadow-hover: 0 20px 25px -5px rgba(59, 130, 246, 0.25);
+        }
+
+        /* GLOBAL STYLES */
+        body {
+            background-color: var(--bg-main) !important;
+            color: var(--text-primary) !important;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
+        /* MODERN CARD STYLING */
+        .interactive-card, .subject-card, .panel-card, .stats-card {
+            background-color: var(--surface-card) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 16px !important;
+            box-shadow: var(--shadow-md) !important;
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease, border-color var(--transition-speed) ease !important;
+        }
+        .interactive-card:hover, .subject-card:hover, a.interactive-card:hover {
+            transform: translateY(-5px) !important;
+            box-shadow: var(--shadow-hover) !important;
+            border-color: var(--brand-primary) !important;
+        }
+
+        /* BUTTONS & BADGES */
+        .btn-primary { background-color: var(--brand-primary) !important; color: white !important; border: none; border-radius: 8px; transition: all 0.2s ease; }
+        .btn-primary:hover { background-color: var(--brand-hover) !important; transform: scale(1.02); }
+        .badge { background-color: rgba(79, 70, 229, 0.1); color: var(--brand-primary); }
+        [data-theme="dark"] .badge { background-color: rgba(59, 130, 246, 0.15); }
+
+
+        body {
+            margin: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .navbar {
+            width: 100%;
+            background: var(--surface-card);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logout-btn {
+            background-color: transparent;
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 2rem;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .action-btn {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .action-btn:hover {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+        }
+        
+        .card-details {
+            background: var(--surface-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Custom Webkit Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 4px; border: 1px solid var(--border-color); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--brand-primary); }
+        /* Tagify Custom Dark Mode */
+        /* Force Inter font for all tags and dropdowns */
+        .tagify, .tagify__dropdown {
+            font-family: 'Inter', sans-serif !important;
+        }
+
+        .tagify {
+            --tags-border-color: rgba(255,255,255,0.2);
+            --tags-hover-border-color: var(--brand-primary);
+            --tags-focus-border-color: var(--brand-primary);
+            --tag-bg: rgba(59, 130, 246, 0.2);
+            --tag-hover: rgba(59, 130, 246, 0.4);
+            --tag-text-color: var(--text-primary);
+            --tag-text-color--edit: var(--text-primary);
+            --tag-pad: 0.3rem 0.5rem;
+            --tag-inset-shadow-size: 1.1em;
+            --tag-remove-btn-color: var(--text-primary);
+            --tag-remove-btn-bg--hover: #ef4444;
+            color: var(--text-primary);
+            border-radius: 8px;
+            width: 100%;
+            background-color: var(--bg-main);
+        }
+
+        /* Overhaul the Dropdown Menu */
+        .tagify__dropdown {
+            background-color: var(--surface-dark, #1e293b) !important;
+            border: 1px solid var(--border-color) !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            padding: 0 !important;
+            transform: translateY(5px);
+        }
+
+        /* Fix the wrapper background */
+        .tagify__dropdown__wrapper {
+            background-color: transparent !important;
+            border: none !important;
+        }
+
+        /* Style the individual extension items */
+        .tagify__dropdown__item {
+            color: var(--text-primary) !important;
+            padding: 0.6rem 1rem !important;
+            font-weight: 500 !important;
+            text-align: left !important;
+            direction: ltr !important;
+            transition: all 0.2s ease !important;
+            border-bottom: 1px solid var(--border-color) !important;
+            font-size: 0.95rem !important;
+            cursor: pointer !important;
+        }
+
+        /* Remove border from the last item */
+        .tagify__dropdown__item:last-child {
+            border-bottom: none !important;
+        }
+
+        /* Hover state for items */
+        .tagify__dropdown__item:hover {
+            background-color: rgba(59, 130, 246, 0.15) !important;
+            color: #60a5fa !important;
+            padding-left: 1.5rem !important;
+        }
+
+        /* Active/Selected state */
+        .tagify__dropdown__item--active {
+            background-color: var(--primary, #3b82f6) !important;
+            color: #ffffff !important;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Add Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        // Prevent FOUC
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+    </script>
+
+</head>
+<body>
+    <nav class="navbar">
+                <a style="display: flex; align-items: center; gap: 15px; text-decoration: none;" href="
+    {% if request.user.is_authenticated %}
+        {% if request.user.role == 'STUDENT' %}
+            {% url 'student_dashboard' %}
+        {% elif request.user.role == 'DOCTOR' %}
+            {% url 'doctor_dashboard' %}
+        {% else %}
+            {% url 'login' %}
+        {% endif %}
+    {% else %}
+        {% url 'login' %}
+    {% endif %}
+">
+            <img src="{% static 'images/logo_nav.png' %}" alt="University Logo" style="height: 45px; width: 45px; object-fit: contain; background-color: white; border-radius: 50%; padding: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h1 style="font-family: 'Cairo', sans-serif !important; font-weight: 700; font-size: 1.3rem; color: var(--text-primary); margin: 0;">منصة كلية التربية النوعية</h1>
+        </a>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            {% if request.user.role == 'DOCTOR' %}
+            <a href="{% url 'doctor_dashboard' %}" class="logout-btn" style="border-color: rgba(59, 130, 246, 0.3); color: #93c5fd;" onmouseover="this.style.backgroundColor='rgba(59, 130, 246, 0.1)'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#93c5fd';">⬅️ عودة للوحة التحكم</a>
+            {% else %}
+            <a href="{% url 'student_dashboard' %}" class="logout-btn" style="border-color: rgba(59, 130, 246, 0.3); color: #93c5fd;" onmouseover="this.style.backgroundColor='rgba(59, 130, 246, 0.1)'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#93c5fd';">⬅️ عودة للوحة التحكم</a>
+            {% endif %}
+            <a href="/logout/" class="logout-btn">تسجيل الخروج</a>
+            <button id="theme-toggle" type="button" class="btn" style="background: var(--surface-card); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; padding: 0;">🌓</button>
+        </div>
+    </nav>
+
+
+<main class="container-fluid mt-4 mb-5" dir="rtl" style="font-family: 'Cairo', sans-serif; max-width: 96%;">
+{% if is_locked %}
+<div class="alert mb-4 shadow-sm" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; border-radius: 12px; font-family: 'Cairo', sans-serif;">
+    <strong>🔒 الامتحان مغلق للتعديل:</strong> لقد بدأ الطلاب بالفعل في أداء هذا الامتحان. حفاظاً على نزاهة الدرجات، تم إيقاف إضافة أو حذف الأسئلة وتعديل الإعدادات.
+    
+    <hr style="border-color: rgba(239, 68, 68, 0.3); margin: 15px 0;">
+    <p style="margin-bottom: 10px; font-size: 0.95rem; color: #fecaca;">هل اكتشفت خطأ وتريد تعديل الامتحان؟ يجب مسح إجابات الطلاب الحالية أولاً (سيتم تصفير درجاتهم في هذا الامتحان وإلغاء محاولاتهم).</p>
+    <form method="POST" action="{% url 'reset_exam_attempts' exam.id %}" onsubmit="return confirm('تحذير خطير: هل أنت متأكد من مسح جميع إجابات ودرجات الطلاب لهذا الامتحان؟ هذا الإجراء لا يمكن التراجع عنه!');" style="margin: 0;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm" style="background: #b91c1c; color: white; border-radius: 6px; font-weight: bold; border: 1px solid #7f1d1d; transition: 0.3s;">⚠️ تصفير محاولات الطلاب وفتح الامتحان</button>
+    </form>
+</div>
+{% endif %}
+
+    <div class="row">
+        <!-- RIGHT COLUMN: FORMS & CONTROLS (col-lg-4) -->
+        <div class="col-lg-4 col-md-12 mb-4">
+            
+                        <!-- 0. Exam Settings Card -->
+            <div class="card mb-4 shadow-sm" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px;">
+                <div class="card-body p-4">
+                    <h5 style="color: #f8f9fa; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; margin-bottom: 20px; font-weight: bold;">⚙️ إعدادات الامتحان</h5>
+                    <form method="POST" action="{% url 'manage_exam_questions' exam.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="update_settings">
+                        
+                        <div class="mb-3">
+                            <label style="color: #cbd5e1; font-size: 0.9rem;">عنوان الامتحان</label>
+                            <input type="text" name="title" value="{{ exam.title }}" class="form-control" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white;" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label style="color: #cbd5e1; font-size: 0.9rem;">مدة الامتحان (بالدقائق)</label>
+                            <input type="number" name="duration_minutes" value="{{ exam.duration_minutes }}" class="form-control" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white;" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label style="color: #cbd5e1; font-size: 0.9rem;">وقت الفتح (اختياري)</label>
+                            <input type="datetime-local" name="start_date" value="{{ exam.start_date|date:'Y-m-d\TH:i' }}" class="form-control" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label style="color: #cbd5e1; font-size: 0.9rem;">وقت الإغلاق (اختياري)</label>
+                            <input type="datetime-local" name="end_date" value="{{ exam.end_date|date:'Y-m-d\TH:i' }}" class="form-control" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                        </div>
+                        
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="show_score" id="showScore" {% if exam.show_score %}checked{% endif %}>
+                            <label class="form-check-label" for="showScore" style="color: #cbd5e1; font-size: 0.9rem;">إظهار النتيجة للطالب بعد التسليم</label>
+                        </div>
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" name="show_answers" id="showAnswers" {% if exam.show_answers %}checked{% endif %}>
+                            <label class="form-check-label" for="showAnswers" style="color: #cbd5e1; font-size: 0.9rem;">إظهار الإجابات الصحيحة للطالب</label>
+                        </div>
+                        
+                        {% if not is_locked %}
+                        <button type="submit" class="btn w-100" style="background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; font-weight: bold; transition: 0.3s;">💾 حفظ الإعدادات</button>
+                        {% else %}
+                        <button disabled class="btn w-100" style="background: rgba(255,255,255,0.1); color: gray; cursor: not-allowed;">🔒 مغلق</button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+
+            <!-- 1. The Bulk Import Card -->
+            <div class="card mb-4" style="background: rgba(16, 185, 129, 0.05); border: 1px dashed rgba(16, 185, 129, 0.3); border-radius: 12px;">
+                <div class="card-body p-4 text-center">
+                    <h5 style="color: #34d399; font-weight: bold; margin-bottom: 15px;">📥 استيراد من ملف (Excel / CSV)</h5>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px;">أضف عشرات الأسئلة دفعة واحدة باستخدام قالبنا.</p>
+                    <a href="{% url 'download_csv_template' %}" class="btn mb-3 w-100" style="background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">📄 تحميل القالب الجاهز</a>
+                    <form action="{% url 'import_exam_questions' exam.id %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="file" name="csv_file" accept=".csv, .xlsx" required class="form-control mb-3" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                        {% if not is_locked %}
+                        <button type="submit" class="btn w-100" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border-radius: 8px; font-weight: bold;">🚀 استيراد الآن</button>
+                        {% else %}
+                        <button disabled class="btn w-100" style="background: rgba(255,255,255,0.1); color: gray; cursor: not-allowed;">🔒 مغلق</button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+
+            <!-- 2. The Manual Add Question Card -->
+            <div class="card p-4 shadow-sm" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px;">
+                <h5 style="color: #f8f9fa; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; margin-bottom: 20px; font-weight: bold;">➕ إضافة سؤال يدوياً</h5>
+                
+                <!-- INSERT THE EXACT EXISTING <form method="POST"> HERE FOR ADDING QUESTIONS -->
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_question">
+                    <div class="row g-4 mb-4" style="text-align: right;">
+                        <div class="col-md-12">
+                            <label style="color: #cbd5e1; font-weight: 600; margin-bottom: 10px; display: block;">نص السؤال *</label>
+                            <input type="text" name="question_text" class="form-control shadow-none w-100" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0.8rem; border-radius: 8px;" placeholder="اكتب السؤال هنا..." required>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="color: #cbd5e1; font-weight: 600; margin-bottom: 10px; display: block;">النوع *</label>
+                            <select name="question_type" id="qType" class="form-select shadow-none w-100" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0.8rem; border-radius: 8px;" onchange="toggleQuestionType()">
+                                <option value="MCQ" style="color: black;">اختيارات متعددة</option>
+                                <option value="TF" style="color: black;">صح وخطأ</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="color: #cbd5e1; font-weight: 600; margin-bottom: 10px; display: block;">الدرجة *</label>
+                            <input type="number" name="marks" class="form-control shadow-none w-100" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0.8rem; border-radius: 8px;" value="1" min="1" required>
+                        </div>
+                    </div>
+
+                    <!-- MCQ Options Block -->
+                    <div id="mcqOptions" class="p-4 mb-4" style="background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); text-align: right;">
+                        <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1rem;">📌 أدخل الاختيارات وحدد الإجابة الصحيحة:</p>
+                        <div class="row g-3">
+                            {% for i in '1234'|make_list %}
+                            <div class="col-md-12">
+                                <div class="d-flex align-items-center" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.5rem 1rem;">
+                                    <div style="margin-left: 10px;">
+                                        <input class="form-check-input m-0" type="radio" name="correct_choice" value="{{ i }}" id="choiceRadio{{ i }}" {% if forloop.first %}checked{% endif %} style="transform: scale(1.2); cursor: pointer; background-color: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3);">
+                                    </div>
+                                    <input type="text" name="choice_{{ i }}" class="form-control border-0 bg-transparent text-white shadow-none w-100" placeholder="الاختيار رقم {{ i }}" style="font-size: 0.95rem; padding: 0.3rem;">
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- TF Options Block -->
+                    <div id="tfOptions" class="p-4 mb-4" style="display: none; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                        <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1rem;">📌 اختر الإجابة الصحيحة:</p>
+                        <select name="correct_tf" class="form-select shadow-none w-100" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0.8rem; border-radius: 8px;">
+                            <option value="True" style="color: black;">الإجابة الصحيحة هي: صح</option>
+                            <option value="False" style="color: black;">الإجابة الصحيحة هي: خطأ</option>
+                        </select>
+                    </div>
+
+                    <div class="text-start mt-3">
+                        {% if not is_locked %}
+                        <button type="submit" class="btn w-100" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 0.8rem; font-size: 1.1rem; font-weight: bold; border-radius: 8px; border: none; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); transition: all 0.3s;">
+                            💾 حفظ السؤال
+                        </button>
+                        {% else %}
+                        <button disabled class="btn w-100" style="background: rgba(255,255,255,0.1); color: gray; padding: 0.8rem; font-size: 1.1rem; border-radius: 8px; border: none; cursor: not-allowed;">
+                            🔒 مغلق
+                        </button>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- LEFT COLUMN: RENDERED QUESTIONS (col-lg-8) -->
+        <div class="col-lg-8 col-md-12">
+            
+            <!-- Header for Left Column -->
+            <div class="d-flex justify-content-between align-items-center mb-4 p-3 shadow-sm" style="background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                <h4 style="color: #f8f9fa; margin: 0; font-weight: bold;">📝 الأسئلة المضافة ({{ exam.questions.count }})</h4>
+                <a href="{% url 'subject_detail' exam.subject.id %}" class="btn" style="background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">🔙 العودة للمادة</a>
+            </div>
+
+            <!-- INSERT THE EXACT EXISTING LOOP HERE -->
+            {% for question in exam.questions.all %}
+            <div class="card mb-4 shadow-sm" style="background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px;">
+                <div class="card-body p-4">
+                    <div class="mb-3" style="width: 100%; position: relative;">
+                        <h5 style="color: #e2e8f0; line-height: 1.6; margin: 0; font-size: 1.25rem; text-align: right; padding-left: 100px; display: block; width: 100%;">
+                            <span style="color: #3b82f6; font-weight: bold; margin-left: 8px;">{{ forloop.counter }}.</span> {{ question.text }}
+                        </h5>
+                        <span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.5); font-size: 0.95rem; padding: 0.5rem 1rem; border-radius: 6px; position: absolute; left: 0; top: 0;">
+                            {{ question.marks }} درجة
+                        </span>
+                    </div>
+                    
+                    <div style="padding-right: 2rem;">
+                        {% for choice in question.choices.all %}
+                        <div class="mb-2 d-flex align-items-center" style="color: {% if choice.is_correct %}#10b981{% else %}#94a3b8{% endif %}; font-size: 1.1rem;">
+                            <span style="margin-left: 10px; font-size: 1.2rem;">{% if choice.is_correct %}✅{% else %}⚪{% endif %}</span>
+                            {{ choice.text }}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 1.5rem 0 1rem 0;">
+                    
+                    <div class="d-flex justify-content-end">
+                        {% if not is_locked %}
+                        <form action="{% url 'delete_question' question.id %}" method="POST" style="margin: 0;" onsubmit="return confirm('هل أنت متأكد من حذف هذا السؤال؟');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 6px; padding: 0.4rem 1.2rem; transition: all 0.3s;">
+                                🗑️ حذف السؤال
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center p-5 mb-4 shadow-sm" style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.2); border-radius: 12px;">
+                <p style="color: #94a3b8; font-size: 1.2rem; margin: 0;">لم يتم إضافة أي أسئلة بعد. ابدأ بإضافة سؤال جديد باستخدام النموذج 👇</p>
+            </div>
+            {% endfor %}
+            
+        </div>
+    </div>
+</main>
+
+<script>
+function toggleQuestionType() {
+    var type = document.getElementById('qType').value;
+    if (type === 'MCQ') {
+        document.getElementById('mcqOptions').style.display = 'block';
+        document.getElementById('tfOptions').style.display = 'none';
+    } else {
+        document.getElementById('mcqOptions').style.display = 'none';
+        document.getElementById('tfOptions').style.display = 'block';
+    }
+}
+</script>
+</body>
+</html>
