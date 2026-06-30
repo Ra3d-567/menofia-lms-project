@@ -606,8 +606,8 @@ def grade_submission(request, submission_id):
         feedback = request.POST.get('feedback')
         if grade:
             grade_val = float(grade)
-            if grade_val < 0 or grade_val > assignment.max_score:
-                messages.error(request, f"يجب أن تكون الدرجة بين 0 و {assignment.max_score}")
+            if grade_val < 0 or grade_val > assignment.max_grade:
+                messages.error(request, f"يجب أن تكون الدرجة بين 0 و {assignment.max_grade}")
                 return redirect('view_submissions', assignment_id=assignment.id)
             submission.grade = grade_val
         if feedback is not None:
